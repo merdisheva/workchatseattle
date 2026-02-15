@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WorkChatSeattle
 
-## Getting Started
+A professional network website for Russian-speaking women in the Seattle area. Built with Next.js 16, Prisma 7, PostgreSQL (Neon), and Tailwind CSS.
 
-First, run the development server:
+## Features
+
+- **Events**: Browse upcoming events and watch recordings of past events
+- **Mentorship**: Register as a mentor or find mentors by industry and expertise
+- **Authentication**: Sign in with Google OAuth or email/password
+- **Admin Panel**: Manage events and approve mentor applications
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Database**: PostgreSQL via Neon
+- **ORM**: Prisma 7
+- **Styling**: Tailwind CSS 4 + shadcn/ui
+- **Authentication**: NextAuth.js v5
+- **Language**: TypeScript
+
+## Prerequisites
+
+- Node.js 18+
+- A [Neon](https://neon.tech) database account (free tier available)
+- Google OAuth credentials (optional, for Google sign-in)
+
+## Setup
+
+### 1. Clone and Install
+
+```bash
+git clone <repository-url>
+cd workchatseattle
+npm install
+```
+
+### 2. Configure Environment
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Update `.env` with your credentials:
+
+```env
+# Neon Database URL
+DATABASE_URL="postgresql://username:password@ep-xxx.region.neon.tech/workchatseattle?sslmode=require"
+
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
+
+# Google OAuth (optional)
+GOOGLE_CLIENT_ID="your-client-id"
+GOOGLE_CLIENT_SECRET="your-client-secret"
+
+# Admin emails (comma-separated)
+ADMIN_EMAILS="your-email@example.com"
+```
+
+### 3. Set Up Database
+
+Push the schema to your database and seed initial data:
+
+```bash
+npx prisma db push
+npm run db:seed
+```
+
+### 4. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── admin/              # Admin dashboard
+│   ├── api/                # API routes
+│   ├── auth/               # Sign in/Sign up pages
+│   ├── events/             # Events listing
+│   ├── mentor/             # Mentor registration/profile
+│   ├── mentors/            # Mentor directory
+│   ├── about/              # About page
+│   └── contact/            # Contact page
+├── components/
+│   ├── events/             # Event-related components
+│   ├── layout/             # Navbar, Footer, AdminSidebar
+│   ├── mentors/            # Mentor-related components
+│   ├── providers/          # Context providers
+│   └── ui/                 # shadcn/ui components
+├── lib/
+│   ├── auth.ts             # NextAuth configuration
+│   ├── prisma.ts           # Prisma client
+│   └── utils.ts            # Utility functions
+└── types/                  # TypeScript types
+```
 
-## Learn More
+## Available Scripts
 
-To learn more about Next.js, take a look at the following resources:
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run db:generate` - Generate Prisma client
+- `npm run db:push` - Push schema to database
+- `npm run db:seed` - Seed database with sample data
+- `npm run db:studio` - Open Prisma Studio
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment on Vercel
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Create a [Vercel](https://vercel.com) account
+2. Import your repository
+3. Add environment variables in Vercel dashboard
+4. Deploy
 
-## Deploy on Vercel
+For Google OAuth, update the authorized redirect URI to include your production URL:
+```
+https://your-domain.vercel.app/api/auth/callback/google
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Admin Access
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Add your email to `ADMIN_EMAILS` environment variable to get admin access. Multiple emails can be separated by commas.
+
+## License
+
+MIT

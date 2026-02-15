@@ -1,0 +1,125 @@
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  mentor   Mentor?
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Mentor {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  bio            String   @db.Text
+  linkedInUrl    String?
+  contactEmail   String
+  isApproved     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  industries     MentorIndustry[]
+  expertiseAreas MentorExpertise[]
+}
+
+model Industry {
+  id      String           @id @default(cuid())
+  name    String           @unique
+  mentors MentorIndustry[]
+}
+
+model MentorIndustry {
+  mentorId   String
+  industryId String
+
+  mentor   Mentor   @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  industry Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
+
+  @@id([mentorId, industryId])
+}
+
+model ExpertiseArea {
+  id      String            @id @default(cuid())
+  name    String            @unique
+  mentors MentorExpertise[]
+}
+
+model MentorExpertise {
+  mentorId        String
+  expertiseAreaId String
+
+  mentor        Mentor        @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  expertiseArea ExpertiseArea @relation(fields: [expertiseAreaId], references: [id], onDelete: Cascade)
+
+  @@id([mentorId, expertiseAreaId])
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  description  String   @db.Text
+  date         DateTime
+  isOnline     Boolean  @default(true)
+  zoomLink     String?
+  location     String?
+  recordingUrl String?
+  imageUrl     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
