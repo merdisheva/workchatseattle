@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -101,12 +102,14 @@ export default async function MentorsPage({ searchParams }: MentorsPageProps) {
         </div>
 
         {/* Filters */}
-        <MentorFilters
-          industries={filters.industries}
-          expertiseAreas={filters.expertiseAreas}
-          selectedIndustry={params.industry}
-          selectedExpertise={params.expertise}
-        />
+        <Suspense fallback={<div className="h-10 animate-pulse rounded bg-muted" />}>
+          <MentorFilters
+            industries={filters.industries}
+            expertiseAreas={filters.expertiseAreas}
+            selectedIndustry={params.industry}
+            selectedExpertise={params.expertise}
+          />
+        </Suspense>
 
         {/* Mentors Grid */}
         {mentors.length > 0 ? (
