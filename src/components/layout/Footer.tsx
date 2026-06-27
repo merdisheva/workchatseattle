@@ -27,7 +27,7 @@ export default function Footer() {
                 <span className="sr-only">Facebook</span>
               </a>
               <a
-                href="https://www.linkedin.com"
+                href="https://www.linkedin.com/company/work-chat-seattle/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary"

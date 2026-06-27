@@ -30,7 +30,7 @@ const contactMethods = [
     icon: Linkedin,
     title: "LinkedIn",
     description: "Connect professionally",
-    link: "https://www.linkedin.com",
+    link: "https://www.linkedin.com/company/work-chat-seattle/",
     linkText: "Follow us on LinkedIn",
     external: true,
   },
