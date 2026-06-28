@@ -80,7 +80,7 @@ async function main() {
       title: "AI (Искусственный интеллект) для гуманитариев с Юлианой Логиновой",
       description:
         "Обсуждение искусственного интеллекта для гуманитариев с Юлианой Логиновой. Shared by Masha Makarenkova.",
-      date: new Date("2026-06-21T18:00:00Z"),
+      date: new Date("2026-06-21T16:30:00Z"), // Jun 21 at 9:30 AM PDT
       isOnline: true,
     },
     {
