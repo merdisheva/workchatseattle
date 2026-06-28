@@ -66,7 +66,7 @@ export default async function HomePage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
+              <Button size="lg" asChild>
                 <Link href="/mentors">Find a Mentor</Link>
               </Button>
             </div>
@@ -242,8 +242,7 @@ export default async function HomePage() {
               </Button>
               <Button
                 size="lg"
-                variant="outline"
-                className="border-white text-white hover:bg-white/10"
+                className="bg-white text-primary hover:bg-white/90"
                 asChild
               >
                 <Link href="/mentor/register">Become a Mentor</Link>
