@@ -38,10 +38,10 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1920&q=80"
+            src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=1920&q=80"
             alt="Women collaborating"
             fill
             className="object-cover brightness-[0.3]"
@@ -87,7 +87,7 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80"
+                  src="https://images.unsplash.com/photo-1768508950520-541f4a08758d?w=600&q=80"
                   alt="Professional event"
                   fill
                   className="object-cover"
@@ -129,7 +129,7 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=80"
+                  src="https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=600&q=80"
                   alt="Community gathering"
                   fill
                   className="object-cover"
@@ -156,7 +156,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 flex items-center justify-between">
               <h2 className="text-2xl font-bold">Upcoming Events</h2>
-              <Button variant="ghost" asChild>
+              <Button variant="ghost" className="text-foreground" asChild>
                 <Link href="/events">
                   View all
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -171,10 +171,10 @@ export default async function HomePage() {
                     <Image
                       src={`https://images.unsplash.com/photo-${
                         index === 0
-                          ? "1591115765373-5207764f72e7"
+                          ? "1555725305-e823b44548de"
                           : index === 1
-                          ? "1475721027785-f74eccf877e2"
-                          : "1517245386807-bb43f82c33c4"
+                          ? "1551731409-43eb3e517a1a"
+                          : "1776039324982-449086984ceb"
                       }?w=600&q=80`}
                       alt={event.title}
                       fill
@@ -212,10 +212,10 @@ export default async function HomePage() {
       )}
 
       {/* Mentorship CTA Section */}
-      <section className="relative py-20">
+      <section className="relative py-20 bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1920&q=80"
+            src="https://images.unsplash.com/photo-1573496546038-82f9c39f6365?w=1920&q=80"
             alt="Mentorship"
             fill
             className="object-cover brightness-[0.25]"
