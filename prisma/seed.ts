@@ -67,47 +67,56 @@ async function main() {
     });
   }
 
-  // Seed sample events
+  // Seed events from Facebook group
   const sampleEvents = [
     {
-      title: "Career Growth Strategies for Tech Professionals",
+      title: "Career Longevity: Navigating Stress in the Corporate World",
       description:
-        "Join us for an insightful discussion on navigating career growth in the tech industry. We will cover topics such as building your personal brand, networking effectively, and identifying opportunities for advancement.",
-      date: new Date("2026-03-15T18:00:00Z"),
+        "Join us for an event on career longevity and navigating stress in the corporate world. Created by Masha Makarenkova.",
+      date: new Date("2026-07-09T01:30:00Z"), // Jul 8 at 6:30 PM PDT
       isOnline: true,
-      zoomLink: "https://zoom.us/j/example1",
     },
     {
-      title: "Women in Leadership: Panel Discussion",
+      title: "AI (Искусственный интеллект) для гуманитариев с Юлианой Логиновой",
       description:
-        "Hear from successful women leaders across various industries as they share their journeys, challenges, and advice for aspiring leaders. Q&A session included.",
-      date: new Date("2026-04-01T17:30:00Z"),
+        "Обсуждение искусственного интеллекта для гуманитариев с Юлианой Логиновой. Shared by Masha Makarenkova.",
+      date: new Date("2026-06-21T18:00:00Z"),
       isOnline: true,
-      zoomLink: "https://zoom.us/j/example2",
     },
     {
-      title: "Networking Mixer - Spring 2026",
+      title: "Career-Proof Yourself: LinkedIn Positioning",
       description:
-        "An informal networking event to connect with fellow community members. Great opportunity to expand your professional network in the Seattle area.",
-      date: new Date("2026-03-22T18:00:00Z"),
-      isOnline: false,
-      location: "Seattle, WA",
+        "Learn how to position yourself on LinkedIn to future-proof your career. Created by Oksana Willeke.",
+      date: new Date("2026-06-01T18:00:00Z"),
+      isOnline: true,
     },
     {
-      title: "Resume Workshop",
+      title: "Careers in Public Service: Workshop with Kendall Hodson",
       description:
-        "Learn how to craft a compelling resume that stands out. Our expert will provide tips on formatting, content, and tailoring your resume for different roles.",
-      date: new Date("2025-12-10T18:00:00Z"),
+        "A workshop exploring career opportunities in public service with Kendall Hodson. Shared by Irena Furmanova.",
+      date: new Date("2026-05-21T18:00:00Z"),
       isOnline: true,
-      recordingUrl: "https://youtube.com/watch?v=example1",
     },
     {
-      title: "Interview Skills Masterclass",
+      title: "Нетворкинг + встреча с бухгалтером Alexsandra Litmanovich",
       description:
-        "Master the art of interviewing with practical tips and mock interview sessions. Covers behavioral, technical, and case interviews.",
-      date: new Date("2026-01-20T18:00:00Z"),
+        "Нетворкинг-встреча и консультация с бухгалтером Alexsandra Litmanovich. Shared by Milana Alderman.",
+      date: new Date("2026-02-22T18:00:00Z"),
       isOnline: true,
-      recordingUrl: "https://youtube.com/watch?v=example2",
+    },
+    {
+      title: "Законы изобилия (ч1)",
+      description:
+        "Первая часть серии встреч о законах изобилия. Created by Kira Gamolsky.",
+      date: new Date("2026-02-17T18:00:00Z"),
+      isOnline: true,
+    },
+    {
+      title: "Master the AI-Powered Job Search in 2026",
+      description:
+        "Learn how to leverage AI tools to supercharge your job search in 2026. Shared by Masha Makarenkova.",
+      date: new Date("2026-02-05T18:00:00Z"),
+      isOnline: true,
     },
   ];
 
