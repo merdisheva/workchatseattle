@@ -1,6 +1,10 @@
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
+
+export const dynamic = "force-dynamic";
 import {
   Table,
   TableBody,
@@ -37,6 +41,11 @@ async function getMentors() {
 }
 
 export default async function AdminMentorsPage() {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") {
+    redirect("/auth/signin");
+  }
+
   const mentors = await getMentors();
 
   const pendingCount = mentors.filter((m) => !m.isApproved).length;
