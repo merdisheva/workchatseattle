@@ -12,20 +12,39 @@ enum Role {
   ADMIN
 }
 
+enum UserStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+}
+
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String     @unique
   emailVerified DateTime?
   image         String?
   password      String?
-  role          Role      @default(USER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          Role       @default(USER)
+  status        UserStatus @default(ACTIVE)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  accounts Account[]
-  sessions Session[]
-  mentor   Mentor?
+  accounts    Account[]
+  sessions    Session[]
+  mentor      Mentor?
+  application MemberApplication?
+}
+
+model MemberApplication {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  whereDoYouLive  String
+  howDidYouHear   String
+  whatDoYouExpect String   @db.Text
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {

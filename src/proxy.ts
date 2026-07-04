@@ -3,34 +3,33 @@ import { NextResponse } from "next/server";
 
 export const proxy = auth((req) => {
   const { pathname } = req.nextUrl;
+  const session = req.auth;
+  const status = session?.user?.status;
 
-  // Protected routes that require authentication
+  // Rejected users can only see public pages and the rejected page
+  if (status === "REJECTED" && !pathname.startsWith("/auth/rejected")) {
+    return NextResponse.redirect(new URL("/auth/rejected", req.url));
+  }
+
   const protectedRoutes = ["/mentor/register", "/mentor/profile"];
-
-  // Admin routes
   const adminRoutes = ["/admin"];
 
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
+  const isProtectedRoute = protectedRoutes.some((r) => pathname.startsWith(r));
+  const isAdminRoute = adminRoutes.some((r) => pathname.startsWith(r));
 
-  if (isProtectedRoute && !req.auth) {
+  if ((isProtectedRoute || isAdminRoute) && !session) {
     const signInUrl = new URL("/auth/signin", req.url);
     signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
   }
 
-  if (isAdminRoute) {
-    if (!req.auth) {
-      const signInUrl = new URL("/auth/signin", req.url);
-      signInUrl.searchParams.set("callbackUrl", pathname);
-      return NextResponse.redirect(signInUrl);
-    }
+  // Pending users cannot access restricted routes
+  if (status === "PENDING" && (isProtectedRoute || isAdminRoute)) {
+    return NextResponse.redirect(new URL("/auth/pending", req.url));
+  }
 
-    if (req.auth.user?.role !== "ADMIN") {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
+  if (isAdminRoute && session?.user?.role !== "ADMIN") {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
@@ -41,5 +40,6 @@ export const config = {
     "/mentor/register",
     "/mentor/profile",
     "/admin/:path*",
+    "/auth/rejected",
   ],
 };
