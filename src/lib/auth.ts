@@ -48,6 +48,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
+        // Rejected users cannot sign in
+        if (user.status === "REJECTED") {
+          return null;
+        }
+
         return {
           id: user.id,
           email: user.email,
@@ -58,18 +63,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // For OAuth sign-ins, set new users to PENDING unless they're admins
+      if (account?.provider === "google" && user.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: user.email },
+          select: { status: true, createdAt: true },
+        });
+        // Newly created OAuth users have ACTIVE status (schema default) — set to PENDING
+        // unless they're an admin email. We detect "new" by checking if createdAt is very recent.
+        if (dbUser && dbUser.status === "ACTIVE" && !isAdmin(user.email)) {
+          const isNewUser = Date.now() - new Date(dbUser.createdAt).getTime() < 10_000;
+          if (isNewUser) {
+            await prisma.user.update({
+              where: { email: user.email },
+              data: { status: "PENDING" },
+            });
+          }
+        }
+        // Block rejected users from signing in via OAuth
+        if (dbUser?.status === "REJECTED") {
+          return "/auth/rejected";
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { role: true, email: true },
+          select: { role: true, email: true, status: true },
         });
-        const role =
-          dbUser?.role === "ADMIN" || isAdmin(dbUser?.email ?? "")
-            ? "ADMIN"
-            : "USER";
+        const adminOverride = isAdmin(dbUser?.email ?? "");
+        const role = dbUser?.role === "ADMIN" || adminOverride ? "ADMIN" : "USER";
+        // Admin emails are always ACTIVE
+        const status = adminOverride ? "ACTIVE" : (dbUser?.status ?? "PENDING");
         token.role = role;
+        token.status = status;
       }
       return token;
     },
@@ -77,6 +108,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as "USER" | "ADMIN";
+        session.user.status = token.status as "PENDING" | "ACTIVE" | "REJECTED";
       }
       return session;
     },

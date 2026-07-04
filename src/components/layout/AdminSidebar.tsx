@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Calendar, Users, LayoutDashboard } from "lucide-react";
+import { Calendar, Users, LayoutDashboard, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Members", href: "/admin/members", icon: UserCheck },
   { name: "Events", href: "/admin/events", icon: Calendar },
   { name: "Mentors", href: "/admin/mentors", icon: Users },
 ];
