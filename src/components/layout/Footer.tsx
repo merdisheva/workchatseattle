@@ -36,7 +36,7 @@ export default function Footer() {
                 <span className="sr-only">LinkedIn</span>
               </a>
               <a
-                href="mailto:contact@workchatseattle.com"
+                href="mailto:workchatseattle@gmail.com"
                 className="text-muted-foreground hover:text-primary"
               >
                 <Mail className="h-5 w-5" />

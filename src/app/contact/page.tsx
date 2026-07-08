@@ -22,8 +22,8 @@ const contactMethods = [
     icon: Mail,
     title: "Email",
     description: "Send us a message",
-    link: "mailto:contact@workchatseattle.com",
-    linkText: "contact@workchatseattle.com",
+    link: "mailto:workchatseattle@gmail.com",
+    linkText: "workchatseattle@gmail.com",
     external: false,
   },
   {
