@@ -3,6 +3,7 @@ import { Calendar, MapPin, Video, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FormattedEventDate, FormattedEventTime } from "./EventDateTime";
 
 interface Event {
   id: string;
@@ -22,19 +23,6 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event, isPast = false }: EventCardProps) {
-  const formattedDate = new Date(event.date).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const formattedTime = new Date(event.date).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-
   return (
     <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
       <CardContent className="flex h-full flex-col p-6">
@@ -52,10 +40,14 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
         <div className="mb-3 space-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span>{formattedDate}</span>
+            <span>
+              <FormattedEventDate date={event.date} />
+            </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="ml-6">{formattedTime}</span>
+            <span className="ml-6">
+              <FormattedEventTime date={event.date} />
+            </span>
           </div>
           {event.isOnline ? (
             <div className="flex items-center gap-2">

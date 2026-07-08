@@ -4,6 +4,7 @@ import { ArrowRight, Users, Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
+import { FormattedEventDate } from "@/components/events/EventDateTime";
 
 async function getUpcomingEvents() {
   const events = await prisma.event.findMany({
@@ -189,12 +190,7 @@ export default async function HomePage() {
                   </div>
                   <CardContent className="p-6">
                     <p className="mb-2 text-xs text-muted-foreground">
-                      {new Date(event.date).toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
+                      <FormattedEventDate date={event.date} />
                     </p>
                     <h3 className="mb-2 font-semibold">{event.title}</h3>
                     <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">

@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { FormattedEventDate, FormattedEventTime } from "@/components/events/EventDateTime";
 
 interface EventPageProps {
   params: Promise<{
@@ -55,19 +56,6 @@ export default async function EventPage({ params }: EventPageProps) {
 
   const isPast = new Date(event.date) < new Date();
 
-  const formattedDate = new Date(event.date).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const formattedTime = new Date(event.date).toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-
   return (
     <div className="py-16">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -104,7 +92,9 @@ export default async function EventPage({ params }: EventPageProps) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Date</p>
-                <p className="font-medium">{formattedDate}</p>
+                <p className="font-medium">
+                  <FormattedEventDate date={event.date} />
+                </p>
               </div>
             </div>
 
@@ -114,7 +104,9 @@ export default async function EventPage({ params }: EventPageProps) {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Time</p>
-                <p className="font-medium">{formattedTime}</p>
+                <p className="font-medium">
+                  <FormattedEventTime date={event.date} />
+                </p>
               </div>
             </div>
 
