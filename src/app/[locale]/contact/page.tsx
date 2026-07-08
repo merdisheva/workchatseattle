@@ -2,49 +2,54 @@ import { Metadata } from "next";
 import Image from "next/image";
 import { Mail, Facebook, Linkedin, MapPin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description:
-    "Get in touch with WorkChatSeattle. We'd love to hear from you!",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Contact");
+  return {
+    title: t("title"),
+    description: t("heroDesc"),
+  };
+}
 
-const contactMethods = [
-  {
-    icon: Facebook,
-    title: "Facebook Group",
-    description: "Join our active community",
-    link: "https://www.facebook.com/groups/workchatseattle",
-    linkText: "Join the Group",
-    external: true,
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    description: "Send us a message",
-    link: "mailto:workchatseattle@gmail.com",
-    linkText: "workchatseattle@gmail.com",
-    external: false,
-  },
-  {
-    icon: Linkedin,
-    title: "LinkedIn",
-    description: "Connect professionally",
-    link: "https://www.linkedin.com/company/work-chat-seattle/",
-    linkText: "Follow us on LinkedIn",
-    external: true,
-  },
-  {
-    icon: MapPin,
-    title: "Location",
-    description: "Seattle, Washington",
-    link: null,
-    linkText: "Greater Seattle Area",
-    external: false,
-  },
-];
+export default async function ContactPage() {
+  const t = await getTranslations("Contact");
 
-export default function ContactPage() {
+  const contactMethods = [
+    {
+      icon: Facebook,
+      title: t("fbGroupTitle"),
+      description: t("fbGroupDesc"),
+      link: "https://www.facebook.com/groups/workchatseattle",
+      linkText: t("fbGroupLink"),
+      external: true,
+    },
+    {
+      icon: Mail,
+      title: t("emailTitle"),
+      description: t("emailDesc"),
+      link: "mailto:workchatseattle@gmail.com",
+      linkText: "workchatseattle@gmail.com",
+      external: false,
+    },
+    {
+      icon: Linkedin,
+      title: t("linkedinTitle"),
+      description: t("linkedinDesc"),
+      link: "https://www.linkedin.com/company/work-chat-seattle/",
+      linkText: t("linkedinLink"),
+      external: true,
+    },
+    {
+      icon: MapPin,
+      title: t("locationTitle"),
+      description: t("locationDesc"),
+      link: null,
+      linkText: t("locationLink"),
+      external: false,
+    },
+  ];
+
   return (
     <div>
       {/* Hero Section */}
@@ -61,11 +66,10 @@ export default function ContactPage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              Contact Us
+              {t("title")}
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-200">
-              Have questions or want to get involved? We&apos;d love to hear from
-              you. Reach out through any of the channels below.
+              {t("heroDesc")}
             </p>
           </div>
         </div>
@@ -106,71 +110,43 @@ export default function ContactPage() {
         {/* FAQ Section */}
         <div className="mt-20">
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold">Frequently Asked Questions</h2>
-            <p className="mt-4 text-muted-foreground">
-              Quick answers to common questions
-            </p>
+            <h2 className="text-3xl font-bold">{t("faqTitle")}</h2>
+            <p className="mt-4 text-muted-foreground">{t("faqSubtitle")}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
             <Card className="border-l-4 border-l-primary">
               <CardHeader>
-                <CardTitle className="text-base">
-                  How can I join WorkChatSeattle?
-                </CardTitle>
+                <CardTitle className="text-base">{t("faq1Question")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  The easiest way to join is through our Facebook group. Simply
-                  click the link above and request to join. We review requests
-                  regularly and will approve your membership shortly.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("faq1Answer")}</p>
               </CardContent>
             </Card>
 
             <Card className="border-l-4 border-l-primary">
               <CardHeader>
-                <CardTitle className="text-base">
-                  Do I need to speak Russian to join?
-                </CardTitle>
+                <CardTitle className="text-base">{t("faq2Question")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  While our community primarily consists of Russian-speaking
-                  women, we welcome anyone who identifies with our mission of
-                  supporting women&apos;s professional growth in the Seattle
-                  area.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("faq2Answer")}</p>
               </CardContent>
             </Card>
 
             <Card className="border-l-4 border-l-secondary">
               <CardHeader>
-                <CardTitle className="text-base">
-                  How can I become a mentor?
-                </CardTitle>
+                <CardTitle className="text-base">{t("faq3Question")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  If you&apos;re an experienced professional willing to share
-                  your knowledge, you can register as a mentor through our
-                  website. We&apos;ll review your profile and match you with
-                  mentees seeking guidance in your area of expertise.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("faq3Answer")}</p>
               </CardContent>
             </Card>
 
             <Card className="border-l-4 border-l-secondary">
               <CardHeader>
-                <CardTitle className="text-base">
-                  Are the events free to attend?
-                </CardTitle>
+                <CardTitle className="text-base">{t("faq4Question")}</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Most of our events are free for community members. Some
-                  special workshops or in-person events may have a small fee to
-                  cover costs. Event details always include pricing information.
-                </p>
+                <p className="text-sm text-muted-foreground">{t("faq4Answer")}</p>
               </CardContent>
             </Card>
           </div>
@@ -189,10 +165,8 @@ export default function ContactPage() {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white">
                 <MapPin className="mx-auto mb-4 h-12 w-12" />
-                <h3 className="text-2xl font-bold">Seattle, Washington</h3>
-                <p className="mt-2 text-white/80">
-                  Serving the Greater Seattle Area
-                </p>
+                <h3 className="text-2xl font-bold">{t("seattleLocation")}</h3>
+                <p className="mt-2 text-white/80">{t("seattleServing")}</p>
               </div>
             </div>
           </div>
@@ -200,18 +174,15 @@ export default function ContactPage() {
 
         {/* CTA */}
         <div className="mt-20 rounded-2xl bg-gradient-to-r from-primary to-primary/80 p-8 text-center text-white md:p-12">
-          <h2 className="text-2xl font-bold">Ready to Connect?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-white/90">
-            Join our growing community of professional women supporting each
-            other in their career journeys.
-          </p>
+          <h2 className="text-2xl font-bold">{t("ctaTitle")}</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-white/90">{t("ctaDesc")}</p>
           <a
             href="https://www.facebook.com/groups/workchatseattle"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 inline-flex h-12 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-primary ring-offset-background transition-colors hover:bg-white/90"
           >
-            Join Our Community
+            {t("ctaBtn")}
           </a>
         </div>
       </div>

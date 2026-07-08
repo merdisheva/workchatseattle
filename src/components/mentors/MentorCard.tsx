@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Linkedin, Mail } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface Mentor {
   id: string;
@@ -31,11 +34,13 @@ interface MentorCardProps {
 }
 
 export default function MentorCard({ mentor }: MentorCardProps) {
-  const initials = mentor.user.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase() || "M";
+  const t = useTranslations("Mentors");
+  const initials =
+    mentor.user.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase() || "M";
 
   return (
     <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
@@ -66,7 +71,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
 
         <div className="mb-4">
           <p className="mb-2 text-xs font-medium text-muted-foreground">
-            Expertise
+            {t("expertiseLabel")}
           </p>
           <div className="flex flex-wrap gap-1">
             {mentor.expertiseAreas.slice(0, 3).map(({ expertiseArea }) => (
@@ -76,7 +81,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
             ))}
             {mentor.expertiseAreas.length > 3 && (
               <Badge variant="outline" className="text-xs">
-                +{mentor.expertiseAreas.length - 3} more
+                {t("more", { count: mentor.expertiseAreas.length - 3 })}
               </Badge>
             )}
           </div>
@@ -84,7 +89,7 @@ export default function MentorCard({ mentor }: MentorCardProps) {
 
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link href={`/mentors/${mentor.id}`}>View Profile</Link>
+            <Link href={`/mentors/${mentor.id}`}>{t("viewProfile")}</Link>
           </Button>
           {mentor.linkedInUrl && (
             <Button variant="ghost" size="icon" asChild>

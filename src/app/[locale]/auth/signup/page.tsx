@@ -14,8 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
 
 export default function SignUpPage() {
+  const t = useTranslations("Auth.SignUp");
   const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
@@ -29,8 +31,10 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+  const set =
+    (field: string) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,13 +42,13 @@ export default function SignUpPage() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("passwordMismatch"));
       setIsLoading(false);
       return;
     }
 
     if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t("passwordTooShort"));
       setIsLoading(false);
       return;
     }
@@ -66,14 +70,14 @@ export default function SignUpPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Something went wrong");
+        setError(data.error || t("genericError"));
         setIsLoading(false);
         return;
       }
 
       router.push("/auth/signin?registered=true");
     } catch {
-      setError("Something went wrong");
+      setError(t("genericError"));
       setIsLoading(false);
     }
   };
@@ -82,10 +86,8 @@ export default function SignUpPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Join WorkChat Seattle</CardTitle>
-          <CardDescription>
-            Tell us a bit about yourself — an admin will review your application.
-          </CardDescription>
+          <CardTitle className="text-2xl font-bold">{t("title")}</CardTitle>
+          <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,43 +99,43 @@ export default function SignUpPage() {
 
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                Account
+                {t("accountSection")}
               </h3>
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">{t("fullNameLabel")}</Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="Your name"
+                  placeholder={t("fullNamePlaceholder")}
                   value={formData.name}
                   onChange={set("name")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("emailLabel")}</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder={t("emailPlaceholder")}
                   value={formData.email}
                   onChange={set("email")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("passwordLabel")}</Label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="At least 8 characters"
+                  placeholder={t("passwordPlaceholder")}
                   value={formData.password}
                   onChange={set("password")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t("confirmPasswordLabel")}</Label>
                 <Input
                   id="confirmPassword"
                   type="password"
@@ -146,37 +148,35 @@ export default function SignUpPage() {
 
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                A few quick questions
+                {t("questionsSection")}
               </h3>
               <div className="space-y-2">
-                <Label htmlFor="whereDoYouLive">Where do you live?</Label>
+                <Label htmlFor="whereDoYouLive">{t("whereLabel")}</Label>
                 <Input
                   id="whereDoYouLive"
                   type="text"
-                  placeholder="e.g. Seattle, Bellevue, Redmond…"
+                  placeholder={t("wherePlaceholder")}
                   value={formData.whereDoYouLive}
                   onChange={set("whereDoYouLive")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="howDidYouHear">How did you hear about WorkChat Seattle?</Label>
+                <Label htmlFor="howDidYouHear">{t("howLabel")}</Label>
                 <Input
                   id="howDidYouHear"
                   type="text"
-                  placeholder="e.g. Facebook group, friend, Google…"
+                  placeholder={t("howPlaceholder")}
                   value={formData.howDidYouHear}
                   onChange={set("howDidYouHear")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="whatDoYouExpect">
-                  What do you expect from the group / what are you looking to find here?
-                </Label>
+                <Label htmlFor="whatDoYouExpect">{t("expectLabel")}</Label>
                 <Textarea
                   id="whatDoYouExpect"
-                  placeholder="Tell us a bit about what you're hoping to get out of the community…"
+                  placeholder={t("expectPlaceholder")}
                   value={formData.whatDoYouExpect}
                   onChange={set("whatDoYouExpect")}
                   rows={4}
@@ -186,14 +186,14 @@ export default function SignUpPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Submitting application..." : "Submit Application"}
+              {isLoading ? t("submitting") : t("submitBtn")}
             </Button>
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t("haveAccount")}{" "}
             <Link href="/auth/signin" className="font-medium text-primary hover:underline">
-              Sign in
+              {t("signInLink")}
             </Link>
           </p>
         </CardContent>

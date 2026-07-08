@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface MentorFiltersProps {
   industries: { id: string; name: string }[];
@@ -23,6 +24,7 @@ export default function MentorFilters({
   selectedIndustry,
   selectedExpertise,
 }: MentorFiltersProps) {
+  const t = useTranslations("Mentors");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -45,16 +47,16 @@ export default function MentorFilters({
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Industry:</span>
+        <span className="text-sm text-muted-foreground">{t("industry")}</span>
         <Select
           value={selectedIndustry || "all"}
           onValueChange={(value) => updateFilter("industry", value)}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All Industries" />
+            <SelectValue placeholder={t("allIndustries")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Industries</SelectItem>
+            <SelectItem value="all">{t("allIndustries")}</SelectItem>
             {industries.map((industry) => (
               <SelectItem key={industry.id} value={industry.id}>
                 {industry.name}
@@ -65,16 +67,16 @@ export default function MentorFilters({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Expertise:</span>
+        <span className="text-sm text-muted-foreground">{t("expertiseFilter")}</span>
         <Select
           value={selectedExpertise || "all"}
           onValueChange={(value) => updateFilter("expertise", value)}
         >
           <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="All Expertise" />
+            <SelectValue placeholder={t("allExpertise")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Expertise</SelectItem>
+            <SelectItem value="all">{t("allExpertise")}</SelectItem>
             {expertiseAreas.map((area) => (
               <SelectItem key={area.id} value={area.id}>
                 {area.name}
@@ -86,7 +88,7 @@ export default function MentorFilters({
 
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={clearFilters}>
-          Clear filters
+          {t("clearFilters")}
         </Button>
       )}
     </div>

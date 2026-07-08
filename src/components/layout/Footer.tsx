@@ -1,7 +1,10 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Facebook, Linkedin, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function Footer() {
+  const t = useTranslations("Footer");
+
   return (
     <footer className="border-t bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -12,9 +15,7 @@ export default function Footer() {
               WorkChat<span className="text-secondary">Seattle</span>
             </Link>
             <p className="mt-4 max-w-md text-sm text-muted-foreground">
-              A professional network for Russian-speaking women in the Seattle
-              area. We focus on knowledge sharing, building community, and
-              career development across all industries.
+              {t("description")}
             </p>
             <div className="mt-4 flex space-x-4">
               <a
@@ -47,14 +48,14 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-sm font-semibold">Quick Links</h3>
+            <h3 className="text-sm font-semibold">{t("quickLinks")}</h3>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link
                   href="/about"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  About Us
+                  {t("aboutUs")}
                 </Link>
               </li>
               <li>
@@ -62,7 +63,7 @@ export default function Footer() {
                   href="/events"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Events
+                  {t("events")}
                 </Link>
               </li>
               <li>
@@ -70,7 +71,7 @@ export default function Footer() {
                   href="/mentors"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Find a Mentor
+                  {t("findMentor")}
                 </Link>
               </li>
               <li>
@@ -78,7 +79,7 @@ export default function Footer() {
                   href="/mentor/register"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Become a Mentor
+                  {t("becomeMentor")}
                 </Link>
               </li>
             </ul>
@@ -86,14 +87,14 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-sm font-semibold">Contact</h3>
+            <h3 className="text-sm font-semibold">{t("contact")}</h3>
             <ul className="mt-4 space-y-2">
               <li>
                 <Link
                   href="/contact"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Contact Us
+                  {t("contactUs")}
                 </Link>
               </li>
               <li>
@@ -103,7 +104,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-foreground"
                 >
-                  Facebook Group
+                  {t("facebookGroup")}
                 </a>
               </li>
             </ul>
@@ -112,8 +113,7 @@ export default function Footer() {
 
         <div className="mt-8 border-t pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} WorkChatSeattle. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} WorkChatSeattle. {t("copyright")}
           </p>
         </div>
       </div>

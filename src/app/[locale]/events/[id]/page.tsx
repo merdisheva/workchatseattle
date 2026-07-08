@@ -13,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { getTranslations, getLocale } from "next-intl/server";
 import { FormattedEventDate, FormattedEventTime } from "@/components/events/EventDateTime";
 
 interface EventPageProps {
@@ -48,13 +49,31 @@ export async function generateMetadata({
 
 export default async function EventPage({ params }: EventPageProps) {
   const { id } = await params;
-  const event = await getEvent(id);
+  const [event, t, locale] = await Promise.all([
+    getEvent(id),
+    getTranslations("Events"),
+    getLocale(),
+  ]);
 
   if (!event) {
     notFound();
   }
 
   const isPast = new Date(event.date) < new Date();
+  const dateLocale = locale === "ru" ? "ru-RU" : "en-US";
+
+  const formattedDate = new Date(event.date).toLocaleDateString(dateLocale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const formattedTime = new Date(event.date).toLocaleTimeString(dateLocale, {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
 
   return (
     <div className="py-16">
@@ -65,17 +84,17 @@ export default async function EventPage({ params }: EventPageProps) {
           className="mb-8 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to {isPast ? "Past" : "Upcoming"} Events
+          {isPast ? t("backToPast") : t("backToUpcoming")}
         </Link>
 
         {/* Event Header */}
         <div className="mb-8">
           <div className="mb-4 flex flex-wrap gap-2">
             <Badge variant={isPast ? "secondary" : "default"}>
-              {isPast ? "Past Event" : "Upcoming"}
+              {isPast ? t("badgePast") : t("badgeUpcoming")}
             </Badge>
             <Badge variant="outline">
-              {event.isOnline ? "Online" : "In Person"}
+              {event.isOnline ? t("online") : t("inPerson")}
             </Badge>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -91,7 +110,7 @@ export default async function EventPage({ params }: EventPageProps) {
                 <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Date</p>
+                <p className="text-sm text-muted-foreground">{t("detailDate")}</p>
                 <p className="font-medium">
                   <FormattedEventDate date={event.date} />
                 </p>
@@ -103,7 +122,7 @@ export default async function EventPage({ params }: EventPageProps) {
                 <Clock className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Time</p>
+                <p className="text-sm text-muted-foreground">{t("detailTime")}</p>
                 <p className="font-medium">
                   <FormattedEventTime date={event.date} />
                 </p>
@@ -119,9 +138,11 @@ export default async function EventPage({ params }: EventPageProps) {
                 )}
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Location</p>
+                <p className="text-sm text-muted-foreground">{t("detailLocation")}</p>
                 <p className="font-medium">
-                  {event.isOnline ? "Virtual Event" : event.location || "TBA"}
+                  {event.isOnline
+                    ? t("virtualEvent")
+                    : event.location || t("locationTba")}
                 </p>
               </div>
             </div>
@@ -130,7 +151,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
         {/* Event Description */}
         <div className="prose prose-gray max-w-none">
-          <h2 className="text-xl font-semibold">About This Event</h2>
+          <h2 className="text-xl font-semibold">{t("aboutEvent")}</h2>
           <div className="mt-4 whitespace-pre-wrap text-muted-foreground">
             {event.description}
           </div>
@@ -146,7 +167,7 @@ export default async function EventPage({ params }: EventPageProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Watch Recording
+                  {t("watchRecording")}
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </a>
               </Button>
@@ -160,7 +181,7 @@ export default async function EventPage({ params }: EventPageProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Join Event
+                    {t("joinEvent")}
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </a>
                 </Button>
@@ -171,11 +192,8 @@ export default async function EventPage({ params }: EventPageProps) {
 
         {/* Share Section */}
         <div className="mt-12 border-t pt-8">
-          <h3 className="mb-4 text-lg font-semibold">Share This Event</h3>
-          <p className="text-muted-foreground">
-            Know someone who might be interested? Share this event with your
-            network.
-          </p>
+          <h3 className="mb-4 text-lg font-semibold">{t("shareTitle")}</h3>
+          <p className="text-muted-foreground">{t("shareDesc")}</p>
         </div>
       </div>
     </div>

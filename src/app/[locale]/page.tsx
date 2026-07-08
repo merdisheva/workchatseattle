@@ -1,10 +1,11 @@
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { ArrowRight, Users, Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
 import { FormattedEventDate } from "@/components/events/EventDateTime";
+import { getTranslations, getLocale } from "next-intl/server";
 
 async function getUpcomingEvents() {
   const events = await prisma.event.findMany({
@@ -31,10 +32,15 @@ async function getMentorCount() {
 }
 
 export default async function HomePage() {
-  const [upcomingEvents, mentorCount] = await Promise.all([
+  const [upcomingEvents, mentorCount, tHero, t, locale] = await Promise.all([
     getUpcomingEvents(),
     getMentorCount(),
+    getTranslations("Hero"),
+    getTranslations("Home"),
+    getLocale(),
   ]);
+
+  const dateLocale = locale === "ru" ? "ru-RU" : "en-US";
 
   return (
     <div>
@@ -52,23 +58,21 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 sm:py-40 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
-              Empower Your Career
-              <span className="block text-secondary">Together</span>
+              {tHero("title")}
+              <span className="block text-secondary">{tHero("subtitle")}</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-200">
-              A professional network for Russian-speaking women in the Seattle
-              area. Join us for knowledge sharing, community building, and
-              career development across all industries.
+              {tHero("description")}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild>
                 <Link href="/events">
-                  View Upcoming Events
+                  {tHero("upcomingEventsBtn")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" asChild>
-                <Link href="/mentors">Find a Mentor</Link>
+                <Link href="/mentors">{tHero("findMentorBtn")}</Link>
               </Button>
             </div>
           </div>
@@ -79,9 +83,9 @@ export default async function HomePage() {
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h2 className="text-3xl font-bold">What We Offer</h2>
+            <h2 className="text-3xl font-bold">{t("featuresTitle")}</h2>
             <p className="mt-4 text-muted-foreground">
-              Building connections and empowering careers
+              {t("featuresSubtitle")}
             </p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
@@ -98,10 +102,9 @@ export default async function HomePage() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                   <Calendar className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold">Regular Events</h3>
+                <h3 className="mb-2 text-lg font-semibold">{t("eventsTitle")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Join our virtual and in-person events covering career growth,
-                  leadership, and professional development topics.
+                  {t("eventsDesc")}
                 </p>
               </CardContent>
             </Card>
@@ -119,10 +122,9 @@ export default async function HomePage() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-secondary/10">
                   <Users className="h-6 w-6 text-secondary" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold">Mentorship</h3>
+                <h3 className="mb-2 text-lg font-semibold">{t("mentorshipTitle")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Connect with experienced professionals who can guide you
-                  through your career journey and help you achieve your goals.
+                  {t("mentorshipDesc")}
                 </p>
               </CardContent>
             </Card>
@@ -140,10 +142,9 @@ export default async function HomePage() {
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
                   <Sparkles className="h-6 w-6 text-accent-foreground" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold">Community</h3>
+                <h3 className="mb-2 text-lg font-semibold">{t("communityTitle")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Be part of a supportive community of women who understand your
-                  unique challenges and celebrate your successes.
+                  {t("communityDesc")}
                 </p>
               </CardContent>
             </Card>
@@ -156,10 +157,10 @@ export default async function HomePage() {
         <section className="bg-muted/30 py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Upcoming Events</h2>
+              <h2 className="text-2xl font-bold">{t("upcomingEventsTitle")}</h2>
               <Button variant="ghost" className="text-foreground" asChild>
                 <Link href="/events">
-                  View all
+                  {t("viewAll")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -170,13 +171,12 @@ export default async function HomePage() {
                 <Card key={event.id} className="overflow-hidden">
                   <div className="relative h-40">
                     <Image
-                      src={`https://images.unsplash.com/photo-${
-                        index === 0
+                      src={`https://images.unsplash.com/photo-${index === 0
                           ? "1555725305-e823b44548de"
                           : index === 1
-                          ? "1551731409-43eb3e517a1a"
-                          : "1776039324982-449086984ceb"
-                      }?w=600&q=80`}
+                            ? "1551731409-43eb3e517a1a"
+                            : "1776039324982-449086984ceb"
+                        }?w=600&q=80`}
                       alt={event.title}
                       fill
                       className="object-cover"
@@ -184,20 +184,25 @@ export default async function HomePage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-3 left-3 flex items-center gap-2">
                       <span className="rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
-                        {event.isOnline ? "Online" : "In Person"}
+                        {event.isOnline ? t("online") : t("inPerson")}
                       </span>
                     </div>
                   </div>
                   <CardContent className="p-6">
                     <p className="mb-2 text-xs text-muted-foreground">
-                      <FormattedEventDate date={event.date} />
+                      <FormattedEventDate date={new Date(event.date).toLocaleDateString(dateLocale, {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })} />
                     </p>
                     <h3 className="mb-2 font-semibold">{event.title}</h3>
                     <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
                       {event.description}
                     </p>
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/events/${event.id}`}>Learn More</Link>
+                      <Link href={`/events/${event.id}`}>{t("learnMore")}</Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -220,13 +225,12 @@ export default async function HomePage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="text-3xl font-bold text-white md:text-4xl">
-              Find Your Mentor
+              {t("ctaTitle")}
             </h2>
             <p className="mt-4 text-lg text-gray-200">
-              Connect with {mentorCount > 0 ? `${mentorCount}+` : ""}{" "}
-              experienced professionals ready to guide your career journey.
-              Get personalized advice, expand your network, and accelerate
-              your growth.
+              {mentorCount > 0
+                ? t("ctaDescWithCount", { count: `${mentorCount}+` })
+                : t("ctaDescNoCount")}
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
@@ -234,14 +238,14 @@ export default async function HomePage() {
                 className="bg-white text-primary hover:bg-white/90"
                 asChild
               >
-                <Link href="/mentors">Browse Mentors</Link>
+                <Link href="/mentors">{t("browseMentors")}</Link>
               </Button>
               <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90"
                 asChild
               >
-                <Link href="/mentor/register">Become a Mentor</Link>
+                <Link href="/mentor/register">{t("becomeMentor")}</Link>
               </Button>
             </div>
           </div>
@@ -254,15 +258,15 @@ export default async function HomePage() {
           <div className="grid gap-8 text-center md:grid-cols-3">
             <div>
               <div className="text-4xl font-bold text-primary">500+</div>
-              <div className="mt-2 text-muted-foreground">Community Members</div>
+              <div className="mt-2 text-muted-foreground">{t("statsMembers")}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-secondary">50+</div>
-              <div className="mt-2 text-muted-foreground">Events Hosted</div>
+              <div className="mt-2 text-muted-foreground">{t("statsEvents")}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-accent-foreground">{mentorCount || "10"}+</div>
-              <div className="mt-2 text-muted-foreground">Active Mentors</div>
+              <div className="mt-2 text-muted-foreground">{t("statsMentors")}</div>
             </div>
           </div>
         </div>
@@ -271,10 +275,9 @@ export default async function HomePage() {
       {/* Join CTA */}
       <section className="border-t bg-muted/30 py-20">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold">Join Our Community</h2>
+          <h2 className="text-2xl font-bold">{t("joinTitle")}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Connect with us on Facebook to stay updated on the latest events,
-            discussions, and opportunities.
+            {t("joinDesc")}
           </p>
           <Button size="lg" className="mt-6" asChild>
             <a
@@ -282,7 +285,7 @@ export default async function HomePage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Join Facebook Group
+              {t("joinBtn")}
             </a>
           </Button>
         </div>

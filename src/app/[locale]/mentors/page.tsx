@@ -5,12 +5,15 @@ import { prisma } from "@/lib/prisma";
 import MentorCard from "@/components/mentors/MentorCard";
 import { Button } from "@/components/ui/button";
 import MentorFilters from "@/components/mentors/MentorFilters";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Find a Mentor",
-  description:
-    "Connect with experienced professionals in the WorkChatSeattle community.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Mentors");
+  return {
+    title: t("title"),
+    description: t("desc"),
+  };
+}
 
 interface MentorsPageProps {
   searchParams: Promise<{
@@ -77,9 +80,10 @@ async function getFilters() {
 
 export default async function MentorsPage({ searchParams }: MentorsPageProps) {
   const params = await searchParams;
-  const [mentors, filters] = await Promise.all([
+  const [mentors, filters, t] = await Promise.all([
     getMentors(params.industry, params.expertise),
     getFilters(),
+    getTranslations("Mentors"),
   ]);
 
   return (
@@ -88,15 +92,14 @@ export default async function MentorsPage({ searchParams }: MentorsPageProps) {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold tracking-tight text-foreground">
-            Find a Mentor
+            {t("title")}
           </h1>
           <p className="mt-4 max-w-3xl text-lg text-muted-foreground">
-            Connect with experienced professionals who can guide your career
-            journey. Our mentors come from diverse industries and backgrounds.
+            {t("desc")}
           </p>
           <div className="mt-6">
             <Button asChild>
-              <Link href="/mentor/register">Become a Mentor</Link>
+              <Link href="/mentor/register">{t("becomeMentor")}</Link>
             </Button>
           </div>
         </div>
@@ -120,14 +123,14 @@ export default async function MentorsPage({ searchParams }: MentorsPageProps) {
           </div>
         ) : (
           <div className="mt-8 rounded-lg border-2 border-dashed p-12 text-center">
-            <h3 className="text-lg font-medium">No mentors found</h3>
+            <h3 className="text-lg font-medium">{t("noMentorsTitle")}</h3>
             <p className="mt-2 text-muted-foreground">
               {params.industry || params.expertise
-                ? "Try adjusting your filters."
-                : "Be the first to register as a mentor!"}
+                ? t("noMentorsFiltered")
+                : t("noMentorsEmpty")}
             </p>
             <Button className="mt-6" asChild>
-              <Link href="/mentor/register">Become a Mentor</Link>
+              <Link href="/mentor/register">{t("becomeMentor")}</Link>
             </Button>
           </div>
         )}

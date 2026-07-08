@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { Calendar, MapPin, Video, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FormattedEventDate, FormattedEventTime } from "./EventDateTime";
+import { useTranslations, useLocale } from "next-intl";
 
 interface Event {
   id: string;
@@ -23,15 +26,32 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event, isPast = false }: EventCardProps) {
+  const t = useTranslations("Events");
+  const locale = useLocale();
+  const dateLocale = locale === "ru" ? "ru-RU" : "en-US";
+
+  const formattedDate = new Date(event.date).toLocaleDateString(dateLocale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const formattedTime = new Date(event.date).toLocaleTimeString(dateLocale, {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+
   return (
     <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
       <CardContent className="flex h-full flex-col p-6">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <Badge variant={isPast ? "secondary" : "default"}>
-            {isPast ? "Past Event" : "Upcoming"}
+            {isPast ? t("badgePast") : t("badgeUpcoming")}
           </Badge>
           <Badge variant="outline">
-            {event.isOnline ? "Online" : "In Person"}
+            {event.isOnline ? t("online") : t("inPerson")}
           </Badge>
         </div>
 
@@ -52,7 +72,7 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
           {event.isOnline ? (
             <div className="flex items-center gap-2">
               <Video className="h-4 w-4" />
-              <span>Virtual Event</span>
+              <span>{t("virtualEvent")}</span>
             </div>
           ) : event.location ? (
             <div className="flex items-center gap-2">
@@ -68,7 +88,7 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
 
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" asChild>
-            <Link href={`/events/${event.id}`}>View Details</Link>
+            <Link href={`/events/${event.id}`}>{t("viewDetails")}</Link>
           </Button>
           {isPast && event.recordingUrl && (
             <Button size="sm" asChild>
@@ -77,7 +97,7 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Watch Recording
+                {t("watchRecording")}
                 <ExternalLink className="ml-1 h-3 w-3" />
               </a>
             </Button>

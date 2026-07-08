@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getTranslations } from "next-intl/server";
 
 interface MentorPageProps {
   params: Promise<{
@@ -59,17 +60,18 @@ export async function generateMetadata({
 
 export default async function MentorPage({ params }: MentorPageProps) {
   const { id } = await params;
-  const mentor = await getMentor(id);
+  const [mentor, t] = await Promise.all([getMentor(id), getTranslations("Mentors")]);
 
   if (!mentor) {
     notFound();
   }
 
-  const initials = mentor.user.name
-    ?.split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase() || "M";
+  const initials =
+    mentor.user.name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase() || "M";
 
   return (
     <div className="py-16">
@@ -80,7 +82,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
           className="mb-8 inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Mentors
+          {t("backToMentors")}
         </Link>
 
         {/* Profile Header */}
@@ -119,7 +121,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
                   <Button size="sm" asChild>
                     <a href={`mailto:${mentor.contactEmail}`}>
                       <Mail className="mr-2 h-4 w-4" />
-                      Contact
+                      {t("contact")}
                     </a>
                   </Button>
                 </div>
@@ -131,7 +133,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
         {/* About */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>About</CardTitle>
+            <CardTitle>{t("about")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="whitespace-pre-wrap text-muted-foreground">
@@ -143,7 +145,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
         {/* Expertise */}
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Areas of Expertise</CardTitle>
+            <CardTitle>{t("expertise")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
@@ -159,17 +161,14 @@ export default async function MentorPage({ params }: MentorPageProps) {
         {/* Contact CTA */}
         <Card className="bg-primary/5">
           <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold">
-              Interested in connecting?
-            </h3>
+            <h3 className="text-lg font-semibold">{t("contactTitle")}</h3>
             <p className="mt-2 text-muted-foreground">
-              Reach out to {mentor.user.name} to start a conversation about
-              mentorship.
+              {t("contactDesc", { name: mentor.user.name ?? "" })}
             </p>
             <Button className="mt-4" asChild>
               <a href={`mailto:${mentor.contactEmail}`}>
                 <Mail className="mr-2 h-4 w-4" />
-                Send Email
+                {t("sendEmail")}
               </a>
             </Button>
           </CardContent>
