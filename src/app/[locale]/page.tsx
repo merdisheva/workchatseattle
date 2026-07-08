@@ -190,12 +190,7 @@ export default async function HomePage() {
                   </div>
                   <CardContent className="p-6">
                     <p className="mb-2 text-xs text-muted-foreground">
-                      <FormattedEventDate date={new Date(event.date).toLocaleDateString(dateLocale, {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })} />
+                      <FormattedEventDate date={event.date} />
                     </p>
                     <h3 className="mb-2 font-semibold">{event.title}</h3>
                     <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
