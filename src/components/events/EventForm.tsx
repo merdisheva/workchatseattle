@@ -19,7 +19,9 @@ interface EventFormProps {
   event?: {
     id: string;
     title: string;
+    titleRu?: string | null;
     description: string;
+    descriptionRu?: string | null;
     date: Date;
     isOnline: boolean;
     zoomLink?: string | null;
@@ -34,7 +36,9 @@ export default function EventForm({ event }: EventFormProps) {
   const isEditing = !!event;
 
   const [title, setTitle] = useState(event?.title || "");
+  const [titleRu, setTitleRu] = useState(event?.titleRu || "");
   const [description, setDescription] = useState(event?.description || "");
+  const [descriptionRu, setDescriptionRu] = useState(event?.descriptionRu || "");
   const [date, setDate] = useState(
     event?.date
       ? new Date(event.date).toISOString().slice(0, 16)
@@ -65,7 +69,9 @@ export default function EventForm({ event }: EventFormProps) {
         },
         body: JSON.stringify({
           title,
+          titleRu: titleRu || null,
           description,
+          descriptionRu: descriptionRu || null,
           date: new Date(date).toISOString(),
           isOnline,
           zoomLink: isOnline ? zoomLink : null,
@@ -102,27 +108,50 @@ export default function EventForm({ event }: EventFormProps) {
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="title">Event Title *</Label>
-            <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g., Career Growth Strategies Workshop"
-              required
-            />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="title">Event Title (English) *</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g., Career Growth Strategies Workshop"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="titleRu">Event Title (Russian)</Label>
+              <Input
+                id="titleRu"
+                value={titleRu}
+                onChange={(e) => setTitleRu(e.target.value)}
+                placeholder="например, Семинар по стратегиям карьерного роста"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description *</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Describe the event, topics covered, and what attendees will learn..."
-              rows={5}
-              required
-            />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="description">Description (English) *</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe the event, topics covered, and what attendees will learn..."
+                rows={5}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="descriptionRu">Description (Russian)</Label>
+              <Textarea
+                id="descriptionRu"
+                value={descriptionRu}
+                onChange={(e) => setDescriptionRu(e.target.value)}
+                placeholder="Описание мероприятия, темы встреч и что узнают участники..."
+                rows={5}
+              />
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">

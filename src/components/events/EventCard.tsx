@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Calendar, MapPin, Video, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,7 +11,9 @@ import { useTranslations, useLocale } from "next-intl";
 interface Event {
   id: string;
   title: string;
+  titleRu?: string | null;
   description: string;
+  descriptionRu?: string | null;
   date: Date;
   isOnline: boolean;
   zoomLink?: string | null;
@@ -55,7 +57,9 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
           </Badge>
         </div>
 
-        <h3 className="mb-2 text-lg font-semibold">{event.title}</h3>
+        <h3 className="mb-2 text-lg font-semibold">
+          {locale === "ru" && event.titleRu ? event.titleRu : event.title}
+        </h3>
 
         <div className="mb-3 space-y-1 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
@@ -83,7 +87,7 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
         </div>
 
         <p className="mb-4 line-clamp-3 flex-1 text-sm text-muted-foreground">
-          {event.description}
+          {locale === "ru" && event.descriptionRu ? event.descriptionRu : event.description}
         </p>
 
         <div className="flex flex-wrap gap-2">

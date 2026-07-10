@@ -7,10 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import MentorRegistrationForm from "@/components/mentors/MentorRegistrationForm";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Mentor Profile",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("MentorForm");
+  return {
+    title: t("profileTitle"),
+  };
+}
 
 async function getMentor(userId: string) {
   const mentor = await prisma.mentor.findUnique({
@@ -32,7 +36,10 @@ async function getMentor(userId: string) {
 }
 
 export default async function MentorProfilePage() {
-  const session = await auth();
+  const [session, t] = await Promise.all([
+    auth(),
+    getTranslations("MentorForm"),
+  ]);
 
   if (!session) {
     redirect("/auth/signin?callbackUrl=/mentor/profile");
@@ -45,13 +52,11 @@ export default async function MentorProfilePage() {
       <div className="py-16">
         <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Mentor Profile
+            {t("profileTitle")}
           </h1>
-          <p className="mt-4 text-muted-foreground">
-            You haven&apos;t registered as a mentor yet.
-          </p>
+          <p className="mt-4 text-muted-foreground">{t("notRegisteredDesc")}</p>
           <Button className="mt-6" asChild>
-            <Link href="/mentor/register">Become a Mentor</Link>
+            <Link href="/mentor/register">{t("becomeMentor")}</Link>
           </Button>
         </div>
       </div>
@@ -63,39 +68,34 @@ export default async function MentorProfilePage() {
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Mentor Profile
+            {t("profileTitle")}
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            Manage your mentor profile and visibility.
-          </p>
+          <p className="mt-2 text-muted-foreground">{t("profileSubtitle")}</p>
         </div>
 
         {/* Status Card */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              Profile Status
+              {t("statusTitle")}
               <Badge variant={mentor.isApproved ? "default" : "secondary"}>
-                {mentor.isApproved ? "Approved" : "Pending Review"}
+                {mentor.isApproved ? t("statusApproved") : t("statusPending")}
               </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
             {mentor.isApproved ? (
               <p className="text-muted-foreground">
-                Your mentor profile is live and visible to the community.{" "}
+                {t("statusApprovedDesc")}{" "}
                 <Link
                   href={`/mentors/${mentor.id}`}
                   className="text-primary hover:underline"
                 >
-                  View public profile
+                  {t("viewPublicProfile")}
                 </Link>
               </p>
             ) : (
-              <p className="text-muted-foreground">
-                Your profile is pending admin approval. You&apos;ll be notified
-                once it&apos;s reviewed.
-              </p>
+              <p className="text-muted-foreground">{t("statusPendingDesc")}</p>
             )}
           </CardContent>
         </Card>

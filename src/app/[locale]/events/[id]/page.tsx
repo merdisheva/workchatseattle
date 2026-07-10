@@ -19,6 +19,7 @@ import { FormattedEventDate, FormattedEventTime } from "@/components/events/Even
 interface EventPageProps {
   params: Promise<{
     id: string;
+    locale: string;
   }>;
 }
 
@@ -32,7 +33,7 @@ async function getEvent(id: string) {
 export async function generateMetadata({
   params,
 }: EventPageProps): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale } = await params;
   const event = await getEvent(id);
 
   if (!event) {
@@ -41,18 +42,20 @@ export async function generateMetadata({
     };
   }
 
+  const title = locale === "ru" && event.titleRu ? event.titleRu : event.title;
+  const description = locale === "ru" && event.descriptionRu ? event.descriptionRu : event.description;
+
   return {
-    title: event.title,
-    description: event.description.substring(0, 160),
+    title,
+    description: description.substring(0, 160),
   };
 }
 
 export default async function EventPage({ params }: EventPageProps) {
-  const { id } = await params;
-  const [event, t, locale] = await Promise.all([
+  const { id, locale } = await params;
+  const [event, t] = await Promise.all([
     getEvent(id),
     getTranslations("Events"),
-    getLocale(),
   ]);
 
   if (!event) {
@@ -60,20 +63,9 @@ export default async function EventPage({ params }: EventPageProps) {
   }
 
   const isPast = new Date(event.date) < new Date();
-  const dateLocale = locale === "ru" ? "ru-RU" : "en-US";
 
-  const formattedDate = new Date(event.date).toLocaleDateString(dateLocale, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const formattedTime = new Date(event.date).toLocaleTimeString(dateLocale, {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
+  const title = locale === "ru" && event.titleRu ? event.titleRu : event.title;
+  const description = locale === "ru" && event.descriptionRu ? event.descriptionRu : event.description;
 
   return (
     <div className="py-16">
@@ -98,7 +90,7 @@ export default async function EventPage({ params }: EventPageProps) {
             </Badge>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {event.title}
+            {title}
           </h1>
         </div>
 
@@ -153,7 +145,7 @@ export default async function EventPage({ params }: EventPageProps) {
         <div className="prose prose-gray max-w-none">
           <h2 className="text-xl font-semibold">{t("aboutEvent")}</h2>
           <div className="mt-4 whitespace-pre-wrap text-muted-foreground">
-            {event.description}
+            {description}
           </div>
         </div>
 

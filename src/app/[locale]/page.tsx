@@ -188,13 +188,15 @@ export default async function HomePage() {
                       </span>
                     </div>
                   </div>
-                  <CardContent className="p-6">
+                   <CardContent className="p-6">
                     <p className="mb-2 text-xs text-muted-foreground">
                       <FormattedEventDate date={event.date} />
                     </p>
-                    <h3 className="mb-2 font-semibold">{event.title}</h3>
+                    <h3 className="mb-2 font-semibold">
+                      {locale === "ru" && event.titleRu ? event.titleRu : event.title}
+                    </h3>
                     <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
-                      {event.description}
+                      {locale === "ru" && event.descriptionRu ? event.descriptionRu : event.description}
                     </p>
                     <Button variant="outline" size="sm" asChild>
                       <Link href={`/events/${event.id}`}>{t("learnMore")}</Link>

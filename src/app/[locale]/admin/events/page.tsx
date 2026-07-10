@@ -65,7 +65,14 @@ export default async function AdminEventsPage() {
                 const isPast = new Date(event.date) < new Date();
                 return (
                   <TableRow key={event.id}>
-                    <TableCell className="font-medium">{event.title}</TableCell>
+                    <TableCell className="font-medium">
+                      <div>{event.title}</div>
+                      {event.titleRu && (
+                        <div className="text-xs text-muted-foreground font-normal">
+                          {event.titleRu}
+                        </div>
+                      )}
+                    </TableCell>
                     <TableCell>
                       {new Date(event.date).toLocaleDateString("en-US", {
                         month: "short",
