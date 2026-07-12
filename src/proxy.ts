@@ -18,12 +18,22 @@ export const proxy = auth((req) => {
 
   // 2. Normalize pathname by stripping locale prefix for auth routing checks
   const segments = pathname.split("/");
-  const hasLocale = segments[1] === "en" || segments[1] === "ru";
+  const hasLocale = (routing.locales as readonly string[]).includes(segments[1]);
+  const locale = hasLocale ? segments[1] : routing.defaultLocale;
   const normalizedPathname = hasLocale ? "/" + segments.slice(2).join("/") : pathname;
+
+  // Build a redirect URL that preserves the visitor's current locale
+  // (the default locale has no prefix under localePrefix: 'as-needed')
+  const localizedUrl = (path: string) => {
+    if (locale === routing.defaultLocale) {
+      return new URL(path, req.url);
+    }
+    return new URL(path === "/" ? `/${locale}` : `/${locale}${path}`, req.url);
+  };
 
   // Rejected users can only see public pages and the rejected page
   if (status === "REJECTED" && !normalizedPathname.startsWith("/auth/rejected")) {
-    return NextResponse.redirect(new URL("/auth/rejected", req.url));
+    return NextResponse.redirect(localizedUrl("/auth/rejected"));
   }
 
   const protectedRoutes = ["/mentor/register", "/mentor/profile"];
@@ -33,18 +43,18 @@ export const proxy = auth((req) => {
   const isAdminRoute = adminRoutes.some((r) => normalizedPathname.startsWith(r));
 
   if ((isProtectedRoute || isAdminRoute) && !session) {
-    const signInUrl = new URL("/auth/signin", req.url);
+    const signInUrl = localizedUrl("/auth/signin");
     signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
   }
 
   // Pending users cannot access restricted routes
   if (status === "PENDING" && (isProtectedRoute || isAdminRoute)) {
-    return NextResponse.redirect(new URL("/auth/pending", req.url));
+    return NextResponse.redirect(localizedUrl("/auth/pending"));
   }
 
   if (isAdminRoute && session?.user?.role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(localizedUrl("/"));
   }
 
   return response;

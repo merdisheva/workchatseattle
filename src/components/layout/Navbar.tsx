@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/i18n/routing";
-import { usePathname as useRawPathname, useRouter } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X, ChevronDown, LogOut, User, Globe } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
@@ -18,17 +18,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
-  const rawPathname = useRawPathname();
+  const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations("Navbar");
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Strip locale prefix to get prefix-free pathname for active state matching
-  const segments = rawPathname.split("/");
-  const hasLocale = segments[1] === "en" || segments[1] === "ru";
-  const pathname = hasLocale ? "/" + segments.slice(2).join("/") : rawPathname;
 
   const navigation = [
     { name: t("home"), href: "/" },
@@ -46,23 +42,10 @@ export default function Navbar() {
   ];
 
   const handleLanguageChange = (newLocale: "en" | "ru") => {
-    // Construct localized path manually
-    const pathSegments = rawPathname.split("/");
-    const currentLocale = pathSegments[1] === "ru" || pathSegments[1] === "en" ? pathSegments[1] : null;
-    
-    if (currentLocale) {
-      pathSegments.splice(1, 1);
-    }
-    
-    if (newLocale !== "en") {
-      pathSegments.splice(1, 0, newLocale);
-    }
-    
-    const targetPath = pathSegments.join("/").replace(/\/$/, "") || "/";
-
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
-    router.replace(targetPath);
-    router.refresh();
+    router.replace(
+      { pathname, query: Object.fromEntries(searchParams.entries()) },
+      { locale: newLocale }
+    );
   };
 
   const isActive = (href: string) => {

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
 import EventCard from "@/components/events/EventCard";
 import { Button } from "@/components/ui/button";

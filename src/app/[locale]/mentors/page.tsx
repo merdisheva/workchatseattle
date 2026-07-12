@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
 import MentorCard from "@/components/mentors/MentorCard";
 import { Button } from "@/components/ui/button";

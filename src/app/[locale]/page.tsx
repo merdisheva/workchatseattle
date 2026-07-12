@@ -40,8 +40,6 @@ export default async function HomePage() {
     getLocale(),
   ]);
 
-  const dateLocale = locale === "ru" ? "ru-RU" : "en-US";
-
   return (
     <div>
       {/* Hero Section */}

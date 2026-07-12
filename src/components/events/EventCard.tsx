@@ -30,20 +30,6 @@ interface EventCardProps {
 export default function EventCard({ event, isPast = false }: EventCardProps) {
   const t = useTranslations("Events");
   const locale = useLocale();
-  const dateLocale = locale === "ru" ? "ru-RU" : "en-US";
-
-  const formattedDate = new Date(event.date).toLocaleDateString(dateLocale, {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const formattedTime = new Date(event.date).toLocaleTimeString(dateLocale, {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
 
   return (
     <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
