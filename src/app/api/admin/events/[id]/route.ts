@@ -44,7 +44,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       where: { id },
       data: {
         title: data.title,
+        titleRu: data.titleRu || null,
         description: data.description,
+        descriptionRu: data.descriptionRu || null,
         date: new Date(data.date),
         isOnline: data.isOnline,
         zoomLink: data.zoomLink,

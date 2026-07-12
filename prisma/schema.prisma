@@ -130,15 +130,17 @@ model MentorExpertise {
 }
 
 model Event {
-  id           String   @id @default(cuid())
-  title        String
-  description  String   @db.Text
-  date         DateTime
-  isOnline     Boolean  @default(true)
-  zoomLink     String?
-  location     String?
-  recordingUrl String?
-  imageUrl     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(cuid())
+  title         String
+  titleRu       String?
+  description   String   @db.Text
+  descriptionRu String?  @db.Text
+  date          DateTime
+  isOnline      Boolean  @default(true)
+  zoomLink      String?
+  location      String?
+  recordingUrl  String?
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

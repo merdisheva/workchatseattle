@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, ChevronDown, LogOut, User } from "lucide-react";
+import { Menu, X, ChevronDown, LogOut, User, Globe } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,25 +17,36 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  {
-    name: "Events",
-    href: "/events",
-    children: [
-      { name: "Upcoming Events", href: "/events" },
-      { name: "Past Events", href: "/events/past" },
-    ],
-  },
-  { name: "Mentors", href: "/mentors" },
-  { name: "Contact", href: "/contact" },
-];
-
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const locale = useLocale();
+  const t = useTranslations("Navbar");
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigation = [
+    { name: t("home"), href: "/" },
+    { name: t("about"), href: "/about" },
+    {
+      name: t("events"),
+      href: "/events",
+      children: [
+        { name: t("upcomingEvents"), href: "/events" },
+        { name: t("pastEvents"), href: "/events/past" },
+      ],
+    },
+    { name: t("mentors"), href: "/mentors" },
+    { name: t("contact"), href: "/contact" },
+  ];
+
+  const handleLanguageChange = (newLocale: "en" | "ru") => {
+    router.replace(
+      { pathname, query: Object.fromEntries(searchParams.entries()) },
+      { locale: newLocale }
+    );
+  };
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -95,8 +107,25 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* User Menu */}
+          {/* Language Switcher and User Menu */}
           <div className="hidden md:flex md:items-center md:space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center gap-1.5 h-9">
+                  <Globe className="h-4 w-4" />
+                  <span className="uppercase text-xs font-semibold">{locale}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleLanguageChange("en")} className="cursor-pointer font-medium">
+                  English
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleLanguageChange("ru")} className="cursor-pointer font-medium">
+                  Русский
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {session ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -132,13 +161,13 @@ export default function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/mentor/profile" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      Mentor Profile
+                      {t("mentorProfile")}
                     </Link>
                   </DropdownMenuItem>
                   {session.user.role === "ADMIN" && (
                     <DropdownMenuItem asChild>
                       <Link href="/admin" className="cursor-pointer">
-                        Admin Dashboard
+                        {t("adminDashboard")}
                       </Link>
                     </DropdownMenuItem>
                   )}
@@ -148,17 +177,17 @@ export default function Navbar() {
                     onClick={() => signOut()}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign out
+                    {t("signOut")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex items-center space-x-2">
                 <Button variant="ghost" asChild>
-                  <Link href="/auth/signin">Sign in</Link>
+                  <Link href="/auth/signin">{t("signIn")}</Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/auth/signup">Sign up</Link>
+                  <Link href="/auth/signup">{t("signUp")}</Link>
                 </Button>
               </div>
             )}
@@ -224,6 +253,32 @@ export default function Navbar() {
               )
             )}
 
+            {/* Mobile Language Switcher */}
+            <div className="flex justify-around py-3 border-t mt-4 gap-2">
+              <Button
+                variant={locale === "en" ? "secondary" : "ghost"}
+                size="sm"
+                className="w-full justify-center"
+                onClick={() => {
+                  handleLanguageChange("en");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                English
+              </Button>
+              <Button
+                variant={locale === "ru" ? "secondary" : "ghost"}
+                size="sm"
+                className="w-full justify-center"
+                onClick={() => {
+                  handleLanguageChange("ru");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Русский
+              </Button>
+            </div>
+
             {/* Mobile Auth */}
             <div className="border-t pt-4">
               {session ? (
@@ -239,7 +294,7 @@ export default function Navbar() {
                     className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Mentor Profile
+                    {t("mentorProfile")}
                   </Link>
                   {session.user.role === "ADMIN" && (
                     <Link
@@ -247,23 +302,27 @@ export default function Navbar() {
                       className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Admin Dashboard
+                      {t("adminDashboard")}
                     </Link>
                   )}
                   <button
                     onClick={() => signOut()}
                     className="block w-full rounded-md px-3 py-2 text-left text-sm font-medium hover:bg-accent"
                   >
-                    Sign out
+                    {t("signOut")}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-2 px-3">
                   <Button variant="outline" className="w-full" asChild>
-                    <Link href="/auth/signin">Sign in</Link>
+                    <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
+                      {t("signIn")}
+                    </Link>
                   </Button>
                   <Button className="w-full" asChild>
-                    <Link href="/auth/signup">Sign up</Link>
+                    <Link href="/auth/signup" onClick={() => setMobileMenuOpen(false)}>
+                      {t("signUp")}
+                    </Link>
                   </Button>
                 </div>
               )}

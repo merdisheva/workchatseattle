@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "next-intl";
 
 interface MentorFormProps {
   existingMentor?: {
@@ -28,6 +29,7 @@ interface Option {
 export default function MentorRegistrationForm({
   existingMentor,
 }: MentorFormProps) {
+  const t = useTranslations("MentorForm");
   const router = useRouter();
   const isEditing = !!existingMentor;
 
@@ -85,13 +87,13 @@ export default function MentorRegistrationForm({
     setError("");
 
     if (selectedIndustries.length === 0) {
-      setError("Please select at least one industry");
+      setError(t("errorIndustry"));
       setIsSubmitting(false);
       return;
     }
 
     if (selectedExpertise.length === 0) {
-      setError("Please select at least one area of expertise");
+      setError(t("errorExpertise"));
       setIsSubmitting(false);
       return;
     }
@@ -116,7 +118,7 @@ export default function MentorRegistrationForm({
 
       if (!response.ok) {
         const data = await response.json();
-        setError(data.error || "Something went wrong");
+        setError(data.error || t("genericError"));
         return;
       }
 
@@ -125,7 +127,7 @@ export default function MentorRegistrationForm({
       );
       router.refresh();
     } catch {
-      setError("Something went wrong");
+      setError(t("genericError"));
     } finally {
       setIsSubmitting(false);
     }
@@ -135,7 +137,7 @@ export default function MentorRegistrationForm({
     return (
       <Card>
         <CardContent className="p-6">
-          <p className="text-center text-muted-foreground">Loading...</p>
+          <p className="text-center text-muted-foreground">{t("loading")}</p>
         </CardContent>
       </Card>
     );
@@ -145,7 +147,7 @@ export default function MentorRegistrationForm({
     <Card>
       <CardHeader>
         <CardTitle>
-          {isEditing ? "Edit Your Profile" : "Become a Mentor"}
+          {isEditing ? t("editTitle") : t("registerTitle")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -157,52 +159,45 @@ export default function MentorRegistrationForm({
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="bio">About You *</Label>
+            <Label htmlFor="bio">{t("bioLabel")}</Label>
             <Textarea
               id="bio"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell potential mentees about your background, experience, and what you can help with..."
+              placeholder={t("bioPlaceholder")}
               rows={6}
               required
             />
-            <p className="text-xs text-muted-foreground">
-              Share your professional background, areas of expertise, and the
-              kind of guidance you can offer.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("bioHint")}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contactEmail">Contact Email *</Label>
+            <Label htmlFor="contactEmail">{t("emailLabel")}</Label>
             <Input
               id="contactEmail"
               type="email"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
-              placeholder="mentor@example.com"
+              placeholder={t("emailPlaceholder")}
               required
             />
-            <p className="text-xs text-muted-foreground">
-              This email will be visible to people looking for mentors.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("emailHint")}</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="linkedInUrl">LinkedIn Profile URL</Label>
+            <Label htmlFor="linkedInUrl">{t("linkedInLabel")}</Label>
             <Input
               id="linkedInUrl"
               type="url"
               value={linkedInUrl}
               onChange={(e) => setLinkedInUrl(e.target.value)}
-              placeholder="https://linkedin.com/in/yourprofile"
+              placeholder={t("linkedInPlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Industries *</Label>
-            <p className="text-xs text-muted-foreground">
-              Select the industries you have experience in.
-            </p>
+            <Label>{t("industriesLabel")}</Label>
+            <p className="text-xs text-muted-foreground">{t("industriesHint")}</p>
             <div className="flex flex-wrap gap-2 pt-2">
               {industries.map((industry) => (
                 <Badge
@@ -222,10 +217,8 @@ export default function MentorRegistrationForm({
           </div>
 
           <div className="space-y-2">
-            <Label>Areas of Expertise *</Label>
-            <p className="text-xs text-muted-foreground">
-              Select the areas where you can provide guidance.
-            </p>
+            <Label>{t("expertiseLabel")}</Label>
+            <p className="text-xs text-muted-foreground">{t("expertiseHint")}</p>
             <div className="flex flex-wrap gap-2 pt-2">
               {expertiseAreas.map((area) => (
                 <Badge
@@ -246,26 +239,23 @@ export default function MentorRegistrationForm({
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting
                 ? isEditing
-                  ? "Saving..."
-                  : "Submitting..."
+                  ? t("saving")
+                  : t("submitting")
                 : isEditing
-                ? "Save Changes"
-                : "Submit Application"}
+                ? t("saveChanges")
+                : t("submitApplication")}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={() => router.back()}
             >
-              Cancel
+              {t("cancel")}
             </Button>
           </div>
 
           {!isEditing && (
-            <p className="text-xs text-muted-foreground">
-              Note: Your profile will be reviewed by an admin before being
-              published.
-            </p>
+            <p className="text-xs text-muted-foreground">{t("reviewNote")}</p>
           )}
         </form>
       </CardContent>
