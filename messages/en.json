@@ -117,6 +117,8 @@
     "locationTba": "TBA",
     "aboutEvent": "About This Event",
     "watchRecording": "Watch Recording",
+    "videoRecording": "Event Recording",
+    "externalVideoDesc": "This recording is hosted on an external platform. Click the button below to watch it.",
     "joinEvent": "Join Event",
     "shareTitle": "Share This Event",
     "shareDesc": "Know someone who might be interested? Share this event with your network.",

@@ -23,6 +23,84 @@ interface EventPageProps {
   }>;
 }
 
+function parseVideoUrl(urlStr: string) {
+  const url = urlStr.trim();
+  let cleanUrl = url;
+  if (!/^https?:\/\//i.test(cleanUrl)) {
+    cleanUrl = "https://" + cleanUrl;
+  }
+  try {
+    const parsed = new URL(cleanUrl);
+    const host = parsed.hostname.toLowerCase();
+
+    // YouTube
+    if (host.includes("youtube.com") || host.includes("youtu.be")) {
+      let videoId = "";
+      if (host.includes("youtu.be")) {
+        videoId = parsed.pathname.substring(1);
+      } else if (parsed.pathname.startsWith("/shorts/")) {
+        videoId = parsed.pathname.split("/")[2];
+      } else if (parsed.pathname.startsWith("/embed/")) {
+        videoId = parsed.pathname.split("/")[2];
+      } else {
+        videoId = parsed.searchParams.get("v") || "";
+      }
+      videoId = videoId.split("&")[0];
+      if (videoId) {
+        return {
+          type: "youtube",
+          embedUrl: `https://www.youtube.com/embed/${videoId}`,
+        };
+      }
+    }
+
+    // Vimeo
+    if (host.includes("vimeo.com")) {
+      let videoId = "";
+      if (host.includes("player.vimeo.com")) {
+        const parts = parsed.pathname.split("/");
+        videoId = parts[parts.length - 1];
+      } else {
+        const parts = parsed.pathname.split("/");
+        videoId = parts[parts.length - 1];
+      }
+      if (videoId && /^\d+$/.test(videoId)) {
+        return {
+          type: "vimeo",
+          embedUrl: `https://player.vimeo.com/video/${videoId}`,
+        };
+      }
+    }
+
+    // Loom
+    if (host.includes("loom.com")) {
+      let videoId = "";
+      const parts = parsed.pathname.split("/");
+      videoId = parts[parts.length - 1];
+      if (videoId) {
+        return {
+          type: "loom",
+          embedUrl: `https://www.loom.com/embed/${videoId}`,
+        };
+      }
+    }
+
+    // Direct Video Link (HTML5 Video)
+    if (/\.(mp4|webm|ogg|ogv)(\?.*)?$/i.test(parsed.pathname)) {
+      return {
+        type: "direct",
+        embedUrl: url,
+      };
+    }
+  } catch (e) {
+    // Ignore URL parse error
+  }
+  return {
+    type: "unknown",
+    embedUrl: url,
+  };
+}
+
 async function getEvent(id: string) {
   const event = await prisma.event.findUnique({
     where: { id },
@@ -66,6 +144,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
   const title = locale === "ru" && event.titleRu ? event.titleRu : event.title;
   const description = locale === "ru" && event.descriptionRu ? event.descriptionRu : event.description;
+  const videoInfo = event.recordingUrl ? parseVideoUrl(event.recordingUrl) : null;
 
   return (
     <div className="py-16">
@@ -148,6 +227,58 @@ export default async function EventPage({ params }: EventPageProps) {
             {description}
           </div>
         </div>
+
+        {/* Video Embedding */}
+        {event.recordingUrl && videoInfo && (
+          <div className="mt-12 border-t pt-8">
+            <h2 className="mb-6 text-xl font-semibold flex items-center gap-2 text-foreground">
+              <Video className="h-5 w-5 text-primary" />
+              {t("videoRecording")}
+            </h2>
+            
+            {videoInfo.type !== "unknown" ? (
+              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-white/10 dark:border-white/5 bg-black group hover:shadow-2xl transition-all duration-300">
+                {videoInfo.type === "direct" ? (
+                  <video 
+                    src={videoInfo.embedUrl} 
+                    controls 
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <iframe
+                    src={videoInfo.embedUrl}
+                    title="Event Recording"
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            ) : (
+              <div className="relative overflow-hidden rounded-2xl border border-dashed border-border bg-gradient-to-br from-muted/50 to-muted p-8 text-center sm:p-12 hover:border-primary/50 transition-colors duration-300">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
+                  <Video className="h-6 w-6" />
+                </div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {t("watchRecording")}
+                </h3>
+                <p className="mx-auto max-w-md text-sm text-muted-foreground mb-6">
+                  {t("externalVideoDesc")}
+                </p>
+                <Button size="lg" asChild className="shadow-lg hover:shadow-primary/20 transition-all duration-300">
+                  <a
+                    href={event.recordingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t("watchRecording")}
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="mt-8 flex flex-wrap gap-4">
