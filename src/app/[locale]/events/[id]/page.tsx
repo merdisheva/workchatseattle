@@ -8,8 +8,10 @@ import {
   ArrowLeft,
   ExternalLink,
   Clock,
+  Lock,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -131,9 +133,10 @@ export async function generateMetadata({
 
 export default async function EventPage({ params }: EventPageProps) {
   const { id, locale } = await params;
-  const [event, t] = await Promise.all([
+  const [event, t, session] = await Promise.all([
     getEvent(id),
     getTranslations("Events"),
+    auth(),
   ]);
 
   if (!event) {
@@ -141,6 +144,8 @@ export default async function EventPage({ params }: EventPageProps) {
   }
 
   const isPast = new Date(event.date) < new Date();
+  const isApproved =
+    session?.user?.status === "ACTIVE" || session?.user?.role === "ADMIN";
 
   const title = locale === "ru" && event.titleRu ? event.titleRu : event.title;
   const description = locale === "ru" && event.descriptionRu ? event.descriptionRu : event.description;
@@ -236,44 +241,87 @@ export default async function EventPage({ params }: EventPageProps) {
               {t("videoRecording")}
             </h2>
             
-            {videoInfo.type !== "unknown" ? (
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-white/10 dark:border-white/5 bg-black group hover:shadow-2xl transition-all duration-300">
-                {videoInfo.type === "direct" ? (
-                  <video 
-                    src={videoInfo.embedUrl} 
-                    controls 
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <iframe
-                    src={videoInfo.embedUrl}
-                    title="Event Recording"
-                    className="absolute inset-0 h-full w-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                )}
+            {isApproved ? (
+              videoInfo.type !== "unknown" ? (
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl border border-white/10 dark:border-white/5 bg-black group hover:shadow-2xl transition-all duration-300">
+                  {videoInfo.type === "direct" ? (
+                    <video 
+                      src={videoInfo.embedUrl} 
+                      controls 
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <iframe
+                      src={videoInfo.embedUrl}
+                      title="Event Recording"
+                      className="absolute inset-0 h-full w-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="relative overflow-hidden rounded-2xl border border-dashed border-border bg-gradient-to-br from-muted/50 to-muted p-8 text-center sm:p-12 hover:border-primary/50 transition-colors duration-300">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
+                    <Video className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    {t("watchRecording")}
+                  </h3>
+                  <p className="mx-auto max-w-md text-sm text-muted-foreground mb-6">
+                    {t("externalVideoDesc")}
+                  </p>
+                  <Button size="lg" asChild className="shadow-lg hover:shadow-primary/20 transition-all duration-300">
+                    <a
+                      href={event.recordingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t("watchRecording")}
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </a>
+                  </Button>
+                </div>
+              )
+            ) : !session ? (
+              <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/5 via-muted/40 to-muted p-8 text-center sm:p-12 shadow-md">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary mb-4 ring-8 ring-primary/5">
+                  <Lock className="h-7 w-7" />
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-2">
+                  {t("videoLockedTitle")}
+                </h3>
+                <p className="mx-auto max-w-lg text-sm text-muted-foreground mb-6">
+                  {t("videoLockedDesc")}
+                </p>
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Button size="lg" asChild className="shadow-md">
+                    <Link href={`/auth/signin?callbackUrl=/events/${event.id}`}>
+                      {t("signInToWatch")}
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link href="/auth/signup">
+                      {t("signUpToWatch")}
+                    </Link>
+                  </Button>
+                </div>
               </div>
             ) : (
-              <div className="relative overflow-hidden rounded-2xl border border-dashed border-border bg-gradient-to-br from-muted/50 to-muted p-8 text-center sm:p-12 hover:border-primary/50 transition-colors duration-300">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
-                  <Video className="h-6 w-6" />
+              <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-muted/40 to-muted p-8 text-center sm:p-12 shadow-sm">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-4 ring-8 ring-amber-500/5">
+                  <Clock className="h-7 w-7" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  {t("watchRecording")}
+                <h3 className="text-xl font-bold text-foreground mb-2">
+                  {t("videoPendingTitle")}
                 </h3>
-                <p className="mx-auto max-w-md text-sm text-muted-foreground mb-6">
-                  {t("externalVideoDesc")}
+                <p className="mx-auto max-w-lg text-sm text-muted-foreground mb-6">
+                  {t("videoPendingDesc")}
                 </p>
-                <Button size="lg" asChild className="shadow-lg hover:shadow-primary/20 transition-all duration-300">
-                  <a
-                    href={event.recordingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t("watchRecording")}
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </a>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/auth/pending">
+                    {t("videoPendingTitle")}
+                  </Link>
                 </Button>
               </div>
             )}
@@ -283,7 +331,7 @@ export default async function EventPage({ params }: EventPageProps) {
         {/* Action Buttons */}
         <div className="mt-8 flex flex-wrap gap-4">
           {isPast ? (
-            event.recordingUrl && (
+            event.recordingUrl && isApproved && (
               <Button size="lg" asChild>
                 <a
                   href={event.recordingUrl}

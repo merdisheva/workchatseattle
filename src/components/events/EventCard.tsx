@@ -1,7 +1,8 @@
 "use client";
 
 import { Link } from "@/i18n/routing";
-import { Calendar, MapPin, Video, ExternalLink } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Calendar, MapPin, Video, ExternalLink, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,10 @@ interface EventCardProps {
 export default function EventCard({ event, isPast = false }: EventCardProps) {
   const t = useTranslations("Events");
   const locale = useLocale();
+  const { data: session } = useSession();
+
+  const isApproved =
+    session?.user?.status === "ACTIVE" || session?.user?.role === "ADMIN";
 
   return (
     <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
@@ -81,16 +86,25 @@ export default function EventCard({ event, isPast = false }: EventCardProps) {
             <Link href={`/events/${event.id}`}>{t("viewDetails")}</Link>
           </Button>
           {isPast && event.recordingUrl && (
-            <Button size="sm" asChild>
-              <a
-                href={event.recordingUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("watchRecording")}
-                <ExternalLink className="ml-1 h-3 w-3" />
-              </a>
-            </Button>
+            isApproved ? (
+              <Button size="sm" asChild>
+                <a
+                  href={event.recordingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t("watchRecording")}
+                  <ExternalLink className="ml-1 h-3 w-3" />
+                </a>
+              </Button>
+            ) : (
+              <Button size="sm" variant="secondary" asChild>
+                <Link href={`/events/${event.id}`}>
+                  <Lock className="mr-1 h-3 w-3 text-muted-foreground" />
+                  {t("watchRecording")}
+                </Link>
+              </Button>
+            )
           )}
         </div>
       </CardContent>
