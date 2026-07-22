@@ -57,7 +57,7 @@ export default async function HomePage() {
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
               {tHero("title")}
-              <span className="block text-secondary">{tHero("subtitle")}</span>
+              <span className="block text-accent">{tHero("subtitle")}</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-200">
               {tHero("description")}
