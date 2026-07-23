@@ -109,22 +109,32 @@ export default function Navbar() {
 
           {/* Language Switcher and User Menu */}
           <div className="hidden md:flex md:items-center md:space-x-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="flex items-center gap-1.5 h-9">
-                  <Globe className="h-4 w-4" />
-                  <span className="uppercase text-xs font-semibold">{locale}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => handleLanguageChange("en")} className="cursor-pointer font-medium">
-                  English
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleLanguageChange("ru")} className="cursor-pointer font-medium">
-                  Русский
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-0.5 bg-muted/70 p-0.5 rounded-lg border border-border/40 text-xs font-semibold select-none mr-2">
+              <button
+                onClick={() => handleLanguageChange("en")}
+                className={cn(
+                  "transition-all duration-200 px-2 py-1 rounded-md",
+                  locale === "en"
+                    ? "bg-background text-foreground shadow-sm font-bold cursor-default"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                disabled={locale === "en"}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => handleLanguageChange("ru")}
+                className={cn(
+                  "transition-all duration-200 px-2 py-1 rounded-md",
+                  locale === "ru"
+                    ? "bg-background text-foreground shadow-sm font-bold cursor-default"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                disabled={locale === "ru"}
+              >
+                RU
+              </button>
+            </div>
 
             {session ? (
               <DropdownMenu>
@@ -254,29 +264,39 @@ export default function Navbar() {
             )}
 
             {/* Mobile Language Switcher */}
-            <div className="flex justify-around py-3 border-t mt-4 gap-2">
-              <Button
-                variant={locale === "en" ? "secondary" : "ghost"}
-                size="sm"
-                className="w-full justify-center"
-                onClick={() => {
-                  handleLanguageChange("en");
-                  setMobileMenuOpen(false);
-                }}
-              >
-                English
-              </Button>
-              <Button
-                variant={locale === "ru" ? "secondary" : "ghost"}
-                size="sm"
-                className="w-full justify-center"
-                onClick={() => {
-                  handleLanguageChange("ru");
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Русский
-              </Button>
+            <div className="flex justify-center items-center py-3 border-t mt-4">
+              <div className="flex items-center gap-0.5 bg-muted/70 p-0.5 rounded-lg border border-border/40 text-xs font-semibold select-none">
+                <button
+                  onClick={() => {
+                    handleLanguageChange("en");
+                    setMobileMenuOpen(false);
+                  }}
+                  className={cn(
+                    "transition-all duration-200 px-4 py-1.5 rounded-md",
+                    locale === "en"
+                      ? "bg-background text-foreground shadow-sm font-bold cursor-default"
+                      : "text-muted-foreground"
+                  )}
+                  disabled={locale === "en"}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => {
+                    handleLanguageChange("ru");
+                    setMobileMenuOpen(false);
+                  }}
+                  className={cn(
+                    "transition-all duration-200 px-4 py-1.5 rounded-md",
+                    locale === "ru"
+                      ? "bg-background text-foreground shadow-sm font-bold cursor-default"
+                      : "text-muted-foreground"
+                  )}
+                  disabled={locale === "ru"}
+                >
+                  RU
+                </button>
+              </div>
             </div>
 
             {/* Mobile Auth */}
