@@ -57,7 +57,7 @@ export default async function ContactPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/community/contact-hero-team-portrait.webp"
-            alt="Work Chat Seattle team members gathered together"
+            alt="WorkChat Seattle team members gathered together"
             fill
             className="object-cover object-[center_30%] brightness-[0.52]"
             priority
@@ -157,7 +157,7 @@ export default async function ContactPage() {
           <div className="relative h-[300px]">
             <Image
               src="/images/community/seattle-community.webp"
-              alt="Work Chat Seattle community members outdoors"
+              alt="WorkChat Seattle community members outdoors"
               fill
               className="object-cover"
             />

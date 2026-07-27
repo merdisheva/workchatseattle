@@ -53,7 +53,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/community/home-hero-roundtable.webp"
-            alt="Work Chat Seattle members at a community event"
+            alt="WorkChat Seattle members at a community event"
             fill
             className="object-cover brightness-[0.48]"
             priority
@@ -97,7 +97,7 @@ export default async function HomePage() {
               <div className="relative h-48">
                 <Image
                   src="/images/community/home-events.webp"
-                  alt="Work Chat Seattle panel discussion"
+                  alt="WorkChat Seattle panel discussion"
                   fill
                   className="object-cover"
                 />
@@ -117,7 +117,7 @@ export default async function HomePage() {
               <div className="relative h-48">
                 <Image
                   src="/images/community/home-mentorship.webp"
-                  alt="Work Chat Seattle members collaborating"
+                  alt="WorkChat Seattle members collaborating"
                   fill
                   className="object-cover"
                 />
@@ -137,7 +137,7 @@ export default async function HomePage() {
               <div className="relative h-48">
                 <Image
                   src="/images/community/home-community.webp"
-                  alt="Work Chat Seattle community group"
+                  alt="WorkChat Seattle community group"
                   fill
                   className="object-cover"
                 />
@@ -213,7 +213,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/community/home-mentor-friends.webp"
-            alt="Two Work Chat Seattle community members"
+            alt="Two WorkChat Seattle community members"
             fill
             className="object-cover brightness-[0.45]"
           />

@@ -45,7 +45,7 @@ export default async function AboutPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/community/about-hero.webp"
-            alt="Work Chat Seattle community gathering"
+            alt="WorkChat Seattle community gathering"
             fill
             className="object-cover brightness-[0.52]"
             priority
@@ -70,7 +70,7 @@ export default async function AboutPage() {
             <div className="relative h-[400px] overflow-hidden rounded-2xl">
               <Image
                 src="/images/community/about-mission-audience.webp"
-                alt="Work Chat Seattle networking roundtable"
+                alt="WorkChat Seattle networking roundtable"
                 fill
                 className="object-cover"
               />
@@ -141,7 +141,7 @@ export default async function AboutPage() {
             <div className="relative order-1 h-[400px] overflow-hidden rounded-2xl lg:order-2">
               <Image
                 src="/images/community/about-workshop.webp"
-                alt="Work Chat Seattle workshop panel"
+                alt="WorkChat Seattle workshop panel"
                 fill
                 className="object-cover"
               />
