@@ -141,7 +141,7 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative flex h-8 items-center gap-2 rounded-full px-2"
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage
@@ -152,6 +152,9 @@ export default function Navbar() {
                         {session.user.name?.charAt(0) || "U"}
                       </AvatarFallback>
                     </Avatar>
+                    <span className="max-w-[120px] truncate text-sm font-medium">
+                      {session.user.name?.split(" ")[0] || "User"}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
