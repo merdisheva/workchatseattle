@@ -44,7 +44,7 @@ export default async function AdminDashboardPage() {
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="mt-1 text-muted-foreground">
-            Welcome to the WorkChatSeattle admin panel.
+            Welcome to the WorkChat Seattle admin panel.
           </p>
         </div>
       </div>
