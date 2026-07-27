@@ -44,8 +44,8 @@ export default async function AboutPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1556565681-306458ef93cd?w=1920&q=80"
-            alt="Team collaboration"
+            src="/images/community/about-hero.webp"
+            alt="Work Chat Seattle community gathering"
             fill
             className="object-cover brightness-[0.35]"
             priority
@@ -69,8 +69,8 @@ export default async function AboutPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="relative h-[400px] overflow-hidden rounded-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1551836022-4c4c79ecde51?w=800&q=80"
-                alt="Women networking"
+                src="/images/community/about-mission.webp"
+                alt="Work Chat Seattle networking roundtable"
                 fill
                 className="object-cover"
               />
@@ -140,8 +140,8 @@ export default async function AboutPage() {
             </div>
             <div className="relative order-1 h-[400px] overflow-hidden rounded-2xl lg:order-2">
               <Image
-                src="https://images.unsplash.com/photo-1573496130141-209d200cebd8?w=800&q=80"
-                alt="Workshop session"
+                src="/images/community/about-workshop.webp"
+                alt="Work Chat Seattle workshop panel"
                 fill
                 className="object-cover"
               />
@@ -179,8 +179,8 @@ export default async function AboutPage() {
       <section className="relative py-20">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1502175353174-a7a70e73b362?w=1920&q=80"
-            alt="Seattle skyline"
+            src="/images/community/seattle-community.webp"
+            alt="Work Chat Seattle community members outdoors"
             fill
             className="object-cover brightness-[0.3]"
           />

@@ -7,6 +7,12 @@ import { prisma } from "@/lib/prisma";
 import { FormattedEventDate } from "@/components/events/EventDateTime";
 import { getTranslations, getLocale } from "next-intl/server";
 
+const featuredEventImages = [
+  "/images/community/event-workshop.webp",
+  "/images/community/event-audience.webp",
+  "/images/community/event-networking.webp",
+];
+
 async function getUpcomingEvents() {
   const events = await prisma.event.findMany({
     where: {
@@ -46,8 +52,8 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=1920&q=80"
-            alt="Women collaborating"
+            src="/images/community/home-hero.webp"
+            alt="Work Chat Seattle members at a community event"
             fill
             className="object-cover brightness-[0.3]"
             priority
@@ -90,8 +96,8 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1768508950520-541f4a08758d?w=600&q=80"
-                  alt="Professional event"
+                  src="/images/community/home-events.webp"
+                  alt="Work Chat Seattle panel discussion"
                   fill
                   className="object-cover"
                 />
@@ -110,8 +116,8 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80"
-                  alt="Mentorship session"
+                  src="/images/community/home-mentorship.webp"
+                  alt="Work Chat Seattle members collaborating"
                   fill
                   className="object-cover"
                 />
@@ -130,8 +136,8 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=600&q=80"
-                  alt="Community gathering"
+                  src="/images/community/home-community.webp"
+                  alt="Work Chat Seattle community group"
                   fill
                   className="object-cover"
                 />
@@ -169,12 +175,7 @@ export default async function HomePage() {
                 <Card key={event.id} className="overflow-hidden">
                   <div className="relative h-40">
                     <Image
-                      src={`https://images.unsplash.com/photo-${index === 0
-                          ? "1555725305-e823b44548de"
-                          : index === 1
-                            ? "1551731409-43eb3e517a1a"
-                            : "1776039324982-449086984ceb"
-                        }?w=600&q=80`}
+                      src={featuredEventImages[index]}
                       alt={event.title}
                       fill
                       className="object-cover"
@@ -211,8 +212,8 @@ export default async function HomePage() {
       <section className="relative py-20 bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1573496546038-82f9c39f6365?w=1920&q=80"
-            alt="Mentorship"
+            src="/images/community/home-cta.webp"
+            alt="Work Chat Seattle members"
             fill
             className="object-cover brightness-[0.25]"
           />

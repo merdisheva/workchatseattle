@@ -56,8 +56,8 @@ export default async function ContactPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1920&q=80"
-            alt="Contact us"
+            src="/images/community/contact-hero.webp"
+            alt="Work Chat Seattle members"
             fill
             className="object-cover brightness-[0.35]"
             priority
@@ -156,8 +156,8 @@ export default async function ContactPage() {
         <div className="mt-20 overflow-hidden rounded-2xl">
           <div className="relative h-[300px]">
             <Image
-              src="https://images.unsplash.com/photo-1502175353174-a7a70e73b362?w=1920&q=80"
-              alt="Seattle skyline"
+              src="/images/community/seattle-community.webp"
+              alt="Work Chat Seattle community members outdoors"
               fill
               className="object-cover"
             />
