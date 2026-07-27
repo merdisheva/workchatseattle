@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | WorkChatSeattle",
   },
   description:
-    "A professional network for Russian-speaking women in the Seattle area. Knowledge sharing, community building, and career development across all industries.",
+    "A professional network for Russian-speaking women in the greater Seattle area. Knowledge sharing, community building, and career development across all industries.",
   keywords: [
     "professional network",
     "women",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "WorkChatSeattle",
     description:
-      "Professional network for Russian-speaking women in Seattle",
+      "Professional network for Russian-speaking women in the greater Seattle area",
     type: "website",
     locale: "en_US",
   },
