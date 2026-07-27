@@ -56,10 +56,10 @@ export default async function ContactPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/community/contact-hero.webp"
-            alt="Work Chat Seattle members"
+            src="/images/community/contact-hero-team-portrait.webp"
+            alt="Work Chat Seattle team members gathered together"
             fill
-            className="object-cover brightness-[0.35]"
+            className="object-cover object-[center_30%] brightness-[0.52]"
             priority
           />
         </div>
@@ -161,7 +161,7 @@ export default async function ContactPage() {
               fill
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/40" />
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/60 to-primary/25" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-white">
                 <MapPin className="mx-auto mb-4 h-12 w-12" />

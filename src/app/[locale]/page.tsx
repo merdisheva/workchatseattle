@@ -52,10 +52,10 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/community/home-hero.webp"
+            src="/images/community/home-hero-roundtable.webp"
             alt="Work Chat Seattle members at a community event"
             fill
-            className="object-cover brightness-[0.3]"
+            className="object-cover brightness-[0.48]"
             priority
           />
         </div>
@@ -180,7 +180,7 @@ export default async function HomePage() {
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-3 left-3 flex items-center gap-2">
                       <span className="rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
                         {event.isOnline ? t("online") : t("inPerson")}
@@ -212,10 +212,10 @@ export default async function HomePage() {
       <section className="relative py-20 bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/community/home-cta.webp"
-            alt="Work Chat Seattle members"
+            src="/images/community/home-mentor-friends.webp"
+            alt="Two Work Chat Seattle community members"
             fill
-            className="object-cover brightness-[0.25]"
+            className="object-cover brightness-[0.45]"
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
