@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="text-xl font-bold text-primary">
-              WorkChat<span className="text-secondary">Seattle</span>
+              WorkChat <span className="text-secondary">Seattle</span>
             </Link>
             <p className="mt-4 max-w-md text-sm text-muted-foreground">
               {t("description")}
@@ -113,7 +113,7 @@ export default function Footer() {
 
         <div className="mt-8 border-t pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} WorkChatSeattle. {t("copyright")}
+            &copy; {new Date().getFullYear()} WorkChat Seattle. {t("copyright")}
           </p>
         </div>
       </div>

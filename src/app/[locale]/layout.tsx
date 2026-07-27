@@ -16,8 +16,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "WorkChatSeattle - Professional Network for Women",
-    template: "%s | WorkChatSeattle",
+    default: "WorkChat Seattle - Professional Network for Women",
+    template: "%s | WorkChat Seattle",
   },
   description:
     "A professional network for Russian-speaking women in the greater Seattle area. Knowledge sharing, community building, and career development across all industries.",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "Russian-speaking",
   ],
   openGraph: {
-    title: "WorkChatSeattle",
+    title: "WorkChat Seattle",
     description:
       "Professional network for Russian-speaking women in the greater Seattle area",
     type: "website",

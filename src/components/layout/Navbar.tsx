@@ -60,7 +60,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-xl font-bold text-primary">
-                WorkChat<span className="text-secondary">Seattle</span>
+                WorkChat <span className="text-secondary">Seattle</span>
               </span>
             </Link>
           </div>
