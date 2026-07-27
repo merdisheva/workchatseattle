@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
@@ -60,7 +60,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-xl font-bold text-primary">
-                WorkChat<span className="text-secondary">Seattle</span>
+                WorkChat <span className="text-secondary">Seattle</span>
               </span>
             </Link>
           </div>
@@ -141,17 +141,19 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative flex h-8 items-center gap-2 rounded-full px-2"
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={session.user.image || undefined}
-                        alt={session.user.name || "User"}
-                      />
-                      <AvatarFallback>
-                        {session.user.name?.charAt(0) || "U"}
-                      </AvatarFallback>
-                    </Avatar>
+                    {session.user.image && (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={session.user.image}
+                          alt={session.user.name || "User"}
+                        />
+                      </Avatar>
+                    )}
+                    <span className="max-w-[120px] truncate text-sm font-medium">
+                      {session.user.name?.split(" ")[0] || "User"}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">

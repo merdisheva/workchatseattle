@@ -16,7 +16,7 @@
   "Hero": {
     "title": "Empower Your Career",
     "subtitle": "Together",
-    "description": "A professional network for Russian-speaking women in the Seattle area. Join us for knowledge sharing, community building, and career development across all industries.",
+    "description": "A professional network for Russian-speaking women in the greater Seattle area. Join us for knowledge sharing, community building, and career development across all industries.",
     "upcomingEventsBtn": "View Upcoming Events",
     "findMentorBtn": "Find a Mentor"
   },
@@ -47,7 +47,7 @@
     "joinBtn": "Join Facebook Group"
   },
   "Footer": {
-    "description": "A professional network for Russian-speaking women in the Seattle area. We focus on knowledge sharing, building community, and career development across all industries.",
+    "description": "A professional network for Russian-speaking women in the greater Seattle area. We focus on knowledge sharing, building community, and career development across all industries.",
     "quickLinks": "Quick Links",
     "aboutUs": "About Us",
     "events": "Events",
@@ -60,11 +60,11 @@
   },
   "About": {
     "title": "About Us",
-    "description": "Learn about WorkChatSeattle - a professional network for Russian-speaking women in the Seattle area.",
-    "heroTitle": "About WorkChatSeattle",
-    "heroSubtitle": "We are a professional network for Russian-speaking women in the Seattle area, dedicated to fostering career growth, building meaningful connections, and creating a supportive community.",
+    "description": "Learn about WorkChat Seattle - a professional network for Russian-speaking women in the greater Seattle area.",
+    "heroTitle": "About WorkChat Seattle",
+    "heroSubtitle": "We are a professional network for Russian-speaking women in the greater Seattle area, dedicated to fostering career growth, building meaningful connections, and creating a supportive community.",
     "missionTitle": "Our Mission",
-    "missionDesc1": "WorkChatSeattle was founded with a simple yet powerful mission: to create a space where Russian-speaking women in the Seattle area can connect, learn, and grow together professionally.",
+    "missionDesc1": "WorkChat Seattle was founded with a simple yet powerful mission: to create a space where Russian-speaking women in the greater Seattle area can connect, learn, and grow together professionally.",
     "missionDesc2": "We understand that navigating a career in a new country comes with unique challenges. Language barriers, cultural differences, and the need to rebuild professional networks can make the journey feel isolating. That's why we created this community - to ensure no one has to face these challenges alone.",
     "missionDesc3": "Our members come from all walks of life - from tech professionals and healthcare workers to entrepreneurs and creatives. What unites us is our shared experiences and our commitment to lifting each other up.",
     "whatWeDoTitle": "What We Do",
@@ -86,10 +86,10 @@
     "valuesSupportDesc": "We understand the unique challenges women face in their careers. Our network provides a safe space for honest conversations and mutual support.",
     "valuesGrowthTitle": "Growth",
     "valuesGrowthDesc": "We are committed to helping every member achieve their professional goals, whether that's landing a new job, switching careers, or advancing in their field.",
-    "seattleTitle": "Based in Seattle",
-    "seattleDesc": "Our community is rooted in the vibrant Seattle area, home to a thriving tech industry, diverse cultures, and endless opportunities for professional growth.",
+    "seattleTitle": "Based in the Greater Seattle Area",
+    "seattleDesc": "Our community is rooted in the vibrant greater Seattle area, home to a thriving tech industry, diverse cultures, and endless opportunities for professional growth.",
     "joinTitle": "Join Our Community",
-    "joinDesc": "Whether you're just starting your career journey or are an experienced professional looking to give back, there's a place for you in WorkChatSeattle.",
+    "joinDesc": "Whether you're just starting your career journey or are an experienced professional looking to give back, there's a place for you in WorkChat Seattle.",
     "joinBtn": "Join Facebook Group"
   },
   "Events": {
@@ -158,10 +158,10 @@
     "heroDesc": "Have questions or want to get involved? We'd love to hear from you. Reach out through any of the channels below.",
     "faqTitle": "Frequently Asked Questions",
     "faqSubtitle": "Quick answers to common questions",
-    "faq1Question": "How can I join WorkChatSeattle?",
+    "faq1Question": "How can I join WorkChat Seattle?",
     "faq1Answer": "The easiest way to join is through our Facebook group. Simply click the link above and request to join. We review requests regularly and will approve your membership shortly.",
     "faq2Question": "Do I need to speak Russian to join?",
-    "faq2Answer": "While our community primarily consists of Russian-speaking women, we welcome anyone who identifies with our mission of supporting women's professional growth in the Seattle area.",
+    "faq2Answer": "While our community primarily consists of Russian-speaking women, we welcome anyone who identifies with our mission of supporting women's professional growth in the greater Seattle area.",
     "faq3Question": "How can I become a mentor?",
     "faq3Answer": "If you're an experienced professional willing to share your knowledge, you can register as a mentor through our website. We'll review your profile and match you with mentees seeking guidance in your area of expertise.",
     "faq4Question": "Are the events free to attend?",
@@ -186,7 +186,7 @@
   "Auth": {
     "SignIn": {
       "title": "Welcome Back",
-      "description": "Sign in to your WorkChatSeattle account",
+      "description": "Sign in to your WorkChat Seattle account",
       "continueWithGoogle": "Continue with Google",
       "orContinueWithEmail": "Or continue with email",
       "emailLabel": "Email",
