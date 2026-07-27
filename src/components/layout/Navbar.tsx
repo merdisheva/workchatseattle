@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
@@ -143,15 +143,14 @@ export default function Navbar() {
                     variant="ghost"
                     className="relative flex h-8 items-center gap-2 rounded-full px-2"
                   >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={session.user.image || undefined}
-                        alt={session.user.name || "User"}
-                      />
-                      <AvatarFallback>
-                        {session.user.name?.charAt(0) || "U"}
-                      </AvatarFallback>
-                    </Avatar>
+                    {session.user.image && (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={session.user.image}
+                          alt={session.user.name || "User"}
+                        />
+                      </Avatar>
+                    )}
                     <span className="max-w-[120px] truncate text-sm font-medium">
                       {session.user.name?.split(" ")[0] || "User"}
                     </span>
