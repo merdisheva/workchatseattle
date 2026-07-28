@@ -44,7 +44,13 @@ interface ConnectionItem {
 export default function HelpDashboardPage() {
   const t = useTranslations("Help");
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/help");
+    }
+  }, [status, router]);
 
   const [myRequests, setMyRequests] = useState<HelpPost[]>([]);
   const [myOffers, setMyOffers] = useState<HelpPost[]>([]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -15,7 +15,14 @@ import { Link } from "@/i18n/routing";
 export default function NewHelpRequestPage() {
   const t = useTranslations("Help");
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/help");
+    }
+  }, [status, router]);
+
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
