@@ -1,0 +1,107 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  const { id: connectionId } = await params;
+
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { content, rating, isPublic } = await request.json();
+
+    if (!content) {
+      return NextResponse.json({ error: "Outcome content is required" }, { status: 400 });
+    }
+
+    // Load connection to verify existence and user roles
+    const connection = await prisma.helpConnection.findUnique({
+      where: { id: connectionId },
+      include: {
+        request: true,
+        offer: true,
+      },
+    });
+
+    if (!connection) {
+      return NextResponse.json({ error: "Connection not found" }, { status: 404 });
+    }
+
+    if (connection.status !== "ACCEPTED" && connection.status !== "COMPLETED") {
+      return NextResponse.json(
+        { error: "Outcome can only be logged for accepted or active connections" },
+        { status: 400 }
+      );
+    }
+
+    // Verify caller is part of the connection
+    const isRequester = connection.request.userId === session.user.id;
+    const isHelper = connection.offer.userId === session.user.id;
+
+    if (!isRequester && !isHelper) {
+      return NextResponse.json(
+        { error: "Forbidden: You are not a participant in this connection" },
+        { status: 403 }
+      );
+    }
+
+    // Save or update the outcome
+    const outcome = await prisma.helpOutcome.upsert({
+      where: {
+        connectionId_userId: {
+          connectionId,
+          userId: session.user.id,
+        },
+      },
+      update: {
+        content,
+        rating: rating !== undefined ? parseInt(rating) : undefined,
+        isPublic: isPublic ?? false,
+      },
+      create: {
+        connectionId,
+        userId: session.user.id,
+        content,
+        rating: rating !== undefined ? parseInt(rating) : undefined,
+        isPublic: isPublic ?? false,
+      },
+    });
+
+    // Check if both sides have submitted outcomes
+    const outcomes = await prisma.helpOutcome.findMany({
+      where: { connectionId },
+    });
+
+    if (outcomes.length === 2 && connection.status !== "COMPLETED") {
+      // Transition both connection, request, and offer to COMPLETED
+      await prisma.$transaction([
+        prisma.helpConnection.update({
+          where: { id: connectionId },
+          data: { status: "COMPLETED" },
+        }),
+        prisma.helpRequest.update({
+          where: { id: connection.requestId },
+          data: { status: "COMPLETED" },
+        }),
+        prisma.helpOffer.update({
+          where: { id: connection.offerId },
+          data: { status: "COMPLETED" },
+        }),
+      ]);
+    }
+
+    return NextResponse.json(outcome);
+  } catch (error) {
+    console.error("Failed to log outcome:", error);
+    return NextResponse.json(
+      { error: "Failed to log outcome" },
+      { status: 500 }
+    );
+  }
+}
