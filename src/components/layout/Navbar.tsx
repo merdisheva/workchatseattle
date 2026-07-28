@@ -38,6 +38,7 @@ export default function Navbar() {
       ],
     },
     { name: t("mentors"), href: "/mentors" },
+    { name: t("help"), href: "/help" },
     { name: t("contact"), href: "/contact" },
   ];
 
