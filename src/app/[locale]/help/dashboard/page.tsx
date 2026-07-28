@@ -240,7 +240,7 @@ export default function HelpDashboardPage() {
       <div className="mb-6">
         <Link href="/help" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Help Board
+          Back to Ways to Help
         </Link>
       </div>
 
@@ -378,12 +378,12 @@ export default function HelpDashboardPage() {
                                 {conn.offer.title}
                               </TableCell>
                               <TableCell className="text-right">
-                                <Button size="sm" variant="outline" className="text-[11px] font-semibold flex items-center gap-1.5 ml-auto" asChild>
-                                  <Link href={`/help/connections/${conn.id}`}>
-                                    Open Space
-                                    <ArrowRight className="h-3 w-3" />
-                                  </Link>
-                                </Button>
+                                  <Button size="sm" variant="outline" className="text-[11px] font-semibold flex items-center gap-1.5 ml-auto" asChild>
+                                    <Link href={`/help/connections/${conn.id}`}>
+                                      Details
+                                      <ArrowRight className="h-3 w-3" />
+                                    </Link>
+                                  </Button>
                               </TableCell>
                             </TableRow>
                           ))}

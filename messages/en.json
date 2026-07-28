@@ -6,7 +6,7 @@
     "upcomingEvents": "Upcoming Events",
     "pastEvents": "Past Events",
     "mentors": "Mentors",
-    "help": "Help Board",
+    "help": "Ways to help",
     "contact": "Contact",
     "signIn": "Sign in",
     "signUp": "Sign up",
@@ -279,7 +279,7 @@
     "registerDesc": "Share your knowledge and experience with others in the community. Fill out the form below to apply as a mentor."
   },
   "Help": {
-    "title": "Community Help Board",
+    "title": "Ways to help",
     "description": "Create requests for help, offer help to others, and connect with members.",
     "newRequest": "New Help Request",
     "newOffer": "New Help Offer",

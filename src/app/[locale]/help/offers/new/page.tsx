@@ -85,7 +85,7 @@ export default function NewHelpOfferPage() {
       <div className="mb-6">
         <Link href="/help" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Help Board
+          Back to Ways to Help
         </Link>
       </div>
 
