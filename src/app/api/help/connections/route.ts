@@ -99,6 +99,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (helpRequest.status === "PAUSED" || helpOffer.status === "PAUSED") {
+      return NextResponse.json(
+        { error: "Cannot connect: This post is paused" },
+        { status: 400 }
+      );
+    }
+
     // Verify caller is one of the parties
     if (helpRequest.userId !== session.user.id && helpOffer.userId !== session.user.id) {
       return NextResponse.json(

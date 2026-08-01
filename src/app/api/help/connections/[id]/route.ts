@@ -107,7 +107,7 @@ export async function PUT(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { status } = await request.json();
+    const { status, pauseOffer, pauseRequest } = await request.json();
 
     if (!status) {
       return NextResponse.json({ error: "Status is required" }, { status: 400 });
@@ -119,31 +119,27 @@ export async function PUT(
       data: { status },
     });
 
-    // Side-effects: if connection is accepted, we update underlying request/offer status to CONNECTED
+    // Side-effects: if connection is accepted, check if we should pause offer or request
     if (status === "ACCEPTED") {
-      await Promise.all([
-        prisma.helpRequest.update({
-          where: { id: connection.requestId },
-          data: { status: "CONNECTED" },
-        }),
-        prisma.helpOffer.update({
-          where: { id: connection.offerId },
-          data: { status: "CONNECTED" },
-        }),
-      ]);
-    } else if (status === "CANCELLED" || status === "DECLINED") {
-      // Revert underlying request/offer back to OPEN if they were in CONNECTED status
-      if (connection.request.status === "CONNECTED") {
-        await prisma.helpRequest.update({
-          where: { id: connection.requestId },
-          data: { status: "OPEN" },
-        });
+      const updates = [];
+      if (pauseOffer) {
+        updates.push(
+          prisma.helpOffer.update({
+            where: { id: connection.offerId },
+            data: { status: "PAUSED" },
+          })
+        );
       }
-      if (connection.offer.status === "CONNECTED") {
-        await prisma.helpOffer.update({
-          where: { id: connection.offerId },
-          data: { status: "OPEN" },
-        });
+      if (pauseRequest) {
+        updates.push(
+          prisma.helpRequest.update({
+            where: { id: connection.requestId },
+            data: { status: "PAUSED" },
+          })
+        );
+      }
+      if (updates.length > 0) {
+        await Promise.all(updates);
       }
     }
 

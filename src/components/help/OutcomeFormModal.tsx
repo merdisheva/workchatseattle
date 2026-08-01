@@ -18,8 +18,10 @@ import { Star } from "lucide-react";
 interface OutcomeFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (content: string, rating: number | null, isPublic: boolean) => Promise<void>;
+  onSubmit: (content: string, rating: number | null, isPublic: boolean, unpause: boolean) => Promise<void>;
   partnerName: string;
+  showUnpauseOption?: boolean;
+  unpauseLabel?: string;
   initialData?: {
     content: string;
     rating: number | null;
@@ -32,12 +34,15 @@ export default function OutcomeFormModal({
   onClose,
   onSubmit,
   partnerName,
+  showUnpauseOption,
+  unpauseLabel,
   initialData,
 }: OutcomeFormModalProps) {
   const t = useTranslations("Help");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState<number | null>(null);
   const [isPublic, setIsPublic] = useState(false);
+  const [unpause, setUnpause] = useState(false);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,6 +55,7 @@ export default function OutcomeFormModal({
       setContent("");
       setRating(null);
       setIsPublic(false);
+      setUnpause(false);
     }
   }, [initialData, isOpen]);
 
@@ -57,7 +63,7 @@ export default function OutcomeFormModal({
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await onSubmit(content, rating, isPublic);
+      await onSubmit(content, rating, isPublic, unpause);
       onClose();
     } catch (error) {
       console.error("Failed to submit outcome reflection:", error);
@@ -135,6 +141,24 @@ export default function OutcomeFormModal({
                 {t("outcomePublic")}
               </label>
             </div>
+
+            {showUnpauseOption && (
+              <div className="flex items-center space-x-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="outcome-unpause"
+                  checked={unpause}
+                  onChange={(e) => setUnpause(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label
+                  htmlFor="outcome-unpause"
+                  className="text-xs font-semibold leading-none text-foreground cursor-pointer select-none"
+                >
+                  {unpauseLabel || "Unpause my post so it is visible to others again"}
+                </label>
+              </div>
+            )}
           </div>
 
           <DialogFooter className="gap-2 sm:gap-0">

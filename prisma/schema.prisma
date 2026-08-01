@@ -150,15 +150,13 @@ model Event {
 
 enum HelpRequestStatus {
   OPEN
-  CONNECTED
-  COMPLETED
+  PAUSED
   CANCELLED
 }
 
 enum HelpOfferStatus {
   OPEN
-  CONNECTED
-  COMPLETED
+  PAUSED
   CANCELLED
 }
 

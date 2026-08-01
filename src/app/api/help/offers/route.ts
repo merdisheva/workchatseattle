@@ -7,13 +7,12 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");
 
-    const whereClause: any = {};
+    const whereClause: any = {
+      status: { in: ["OPEN", "PAUSED"] }
+    };
     
     if (userId) {
       whereClause.userId = userId;
-    } else {
-      // General feed excludes completed and cancelled offers
-      whereClause.status = "OPEN";
     }
 
     const offers = await prisma.helpOffer.findMany({
@@ -27,9 +26,10 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [
+        { status: "asc" },
+        { createdAt: "desc" },
+      ],
     });
 
     return NextResponse.json(offers);

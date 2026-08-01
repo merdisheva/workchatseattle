@@ -76,24 +76,33 @@ export default function HelpCard({ item, type, onConnect }: HelpCardProps) {
                 <p className="text-muted-foreground">{formattedDate}</p>
               </div>
             </div>
-            <Badge variant={type === "request" ? "destructive" : "default"} className="font-medium">
-              {type === "request" ? (
-                <span className="flex items-center gap-1">
-                  <Handshake className="h-3 w-3" />
-                  {t("requestsTab")}
-                </span>
-              ) : (
-                <span className="flex items-center gap-1">
-                  <HeartHandshake className="h-3 w-3" />
-                  {t("offersTab")}
-                </span>
+            <div className="flex flex-col gap-1 items-end">
+              <Badge variant={type === "request" ? "destructive" : "default"} className="font-medium">
+                {type === "request" ? (
+                  <span className="flex items-center gap-1">
+                    <Handshake className="h-3 w-3" />
+                    {t("requestsTab")}
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <HeartHandshake className="h-3 w-3" />
+                    {t("offersTab")}
+                  </span>
+                )}
+              </Badge>
+              {item.status === "PAUSED" && (
+                <Badge variant="secondary" className="font-semibold text-[9px] uppercase tracking-wider bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  Paused
+                </Badge>
               )}
-            </Badge>
+            </div>
           </div>
 
           {/* Title & Description */}
           <h3 className="mb-2 text-lg font-semibold tracking-tight text-foreground line-clamp-2">
-            {item.title}
+            <Link href={type === "request" ? `/help/requests/${item.id}` : `/help/offers/${item.id}`} className="hover:underline hover:text-primary">
+              {item.title}
+            </Link>
           </h3>
           <p className="mb-6 text-sm text-muted-foreground line-clamp-4 whitespace-pre-wrap">
             {item.description}
@@ -125,9 +134,10 @@ export default function HelpCard({ item, type, onConnect }: HelpCardProps) {
             <Button
               className="w-full text-xs font-bold"
               onClick={() => onConnect && onConnect(item.id)}
+              disabled={item.status === "PAUSED"}
             >
               <Handshake className="mr-2 h-4 w-4" />
-              {t("connect")}
+              {item.status === "PAUSED" ? "Paused" : t("connect")}
             </Button>
           )}
         </div>

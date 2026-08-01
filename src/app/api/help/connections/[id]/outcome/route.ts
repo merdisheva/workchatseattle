@@ -14,7 +14,7 @@ export async function POST(
   }
 
   try {
-    const { content, rating, isPublic } = await request.json();
+    const { content, rating, isPublic, unpauseOffer, unpauseRequest } = await request.json();
 
     if (!content) {
       return NextResponse.json({ error: "Outcome content is required" }, { status: 400 });
@@ -73,27 +73,30 @@ export async function POST(
       },
     });
 
+    // Perform unpausing if requested by the respective participant
+    if (isRequester && unpauseRequest) {
+      await prisma.helpRequest.update({
+        where: { id: connection.requestId },
+        data: { status: "OPEN" },
+      });
+    }
+    if (isHelper && unpauseOffer) {
+      await prisma.helpOffer.update({
+        where: { id: connection.offerId },
+        data: { status: "OPEN" },
+      });
+    }
+
     // Check if both sides have submitted outcomes
     const outcomes = await prisma.helpOutcome.findMany({
       where: { connectionId },
     });
 
     if (outcomes.length === 2 && connection.status !== "COMPLETED") {
-      // Transition both connection, request, and offer to COMPLETED
-      await prisma.$transaction([
-        prisma.helpConnection.update({
-          where: { id: connectionId },
-          data: { status: "COMPLETED" },
-        }),
-        prisma.helpRequest.update({
-          where: { id: connection.requestId },
-          data: { status: "COMPLETED" },
-        }),
-        prisma.helpOffer.update({
-          where: { id: connection.offerId },
-          data: { status: "COMPLETED" },
-        }),
-      ]);
+      await prisma.helpConnection.update({
+        where: { id: connectionId },
+        data: { status: "COMPLETED" },
+      });
     }
 
     return NextResponse.json(outcome);

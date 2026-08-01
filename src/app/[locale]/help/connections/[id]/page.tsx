@@ -37,12 +37,14 @@ interface ConnectionData {
     title: string;
     description: string;
     userId: string;
+    status: string;
     user: { name: string | null; image: string | null };
   };
   offer: {
     title: string;
     description: string;
     userId: string;
+    status: string;
     user: { name: string | null; image: string | null };
   };
   outcomes: HelpOutcome[];
@@ -136,12 +138,21 @@ export default function ConnectionDetailPage({
   const myOutcome = connection.outcomes.find((o) => o.userId === session?.user?.id);
   const partnerOutcome = connection.outcomes.find((o) => o.userId !== session?.user?.id);
 
-  const handleOutcomeSubmit = async (content: string, rating: number | null, isPublic: boolean) => {
+  const handleOutcomeSubmit = async (content: string, rating: number | null, isPublic: boolean, unpause: boolean) => {
     try {
+      const isRequester = connection.request.userId === session?.user?.id;
+      const isHelper = connection.offer.userId === session?.user?.id;
+
       const res = await fetch(`/api/help/connections/${connectionId}/outcome`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, rating, isPublic }),
+        body: JSON.stringify({
+          content,
+          rating,
+          isPublic,
+          unpauseRequest: isRequester ? unpause : undefined,
+          unpauseOffer: isHelper ? unpause : undefined,
+        }),
       });
 
       if (res.ok) {
@@ -397,6 +408,16 @@ export default function ConnectionDetailPage({
         onClose={() => setIsOutcomeOpen(false)}
         onSubmit={handleOutcomeSubmit}
         partnerName={partnerName}
+        showUnpauseOption={
+          connection.request.userId === session?.user?.id
+            ? connection.request.status === "PAUSED"
+            : connection.offer.status === "PAUSED"
+        }
+        unpauseLabel={
+          connection.request.userId === session?.user?.id
+            ? "Unpause my request so it is active again"
+            : "Unpause my offer so it is active again"
+        }
         initialData={
           myOutcome
             ? {

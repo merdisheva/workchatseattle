@@ -163,6 +163,32 @@ export default function HelpDashboardPage() {
     }
   };
 
+  const handleAcceptConnection = async (conn: ConnectionItem) => {
+    const isOfferAuthor = conn.offer.userId === session?.user?.id;
+    let pauseOffer = false;
+    if (isOfferAuthor) {
+      pauseOffer = confirm("Would you like to pause your help offer? (Click Cancel to keep it open so others can still connect with it.)");
+    }
+    
+    try {
+      const res = await fetch(`/api/help/connections/${conn.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: "ACCEPTED",
+          pauseOffer,
+        }),
+      });
+      if (res.ok) {
+        fetchDashboardData();
+      } else {
+        alert("Failed to accept connection.");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // Divide connections into respective columns
   const incomingProposals = connections.filter((conn) => {
     const isPending = conn.status === "PENDING";
@@ -321,7 +347,7 @@ export default function HelpDashboardPage() {
                                   <Button
                                     size="sm"
                                     className="text-[11px] font-bold"
-                                    onClick={() => handleUpdateConnection(conn.id, "ACCEPTED")}
+                                    onClick={() => handleAcceptConnection(conn)}
                                   >
                                     {t("accept")}
                                   </Button>
@@ -535,14 +561,12 @@ export default function HelpDashboardPage() {
                               </TableCell>
                               <TableCell>
                                 <Badge
-                                  variant={
-                                    post.status === "OPEN"
-                                      ? "default"
-                                      : post.status === "CONNECTED"
-                                      ? "secondary"
-                                      : "outline"
-                                  }
-                                  className="text-[10px] font-semibold uppercase"
+                                  variant={post.status === "OPEN" ? "default" : "secondary"}
+                                  className={`text-[10px] font-semibold uppercase ${
+                                    post.status === "PAUSED"
+                                      ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/15"
+                                      : ""
+                                  }`}
                                 >
                                   {post.status}
                                 </Badge>
@@ -611,14 +635,12 @@ export default function HelpDashboardPage() {
                                 </TableCell>
                                 <TableCell>
                                   <Badge
-                                    variant={
-                                      post.status === "OPEN"
-                                        ? "default"
-                                        : post.status === "CONNECTED"
-                                        ? "secondary"
-                                        : "outline"
-                                    }
-                                    className="text-[10px] font-semibold uppercase"
+                                    variant={post.status === "OPEN" ? "default" : "secondary"}
+                                    className={`text-[10px] font-semibold uppercase ${
+                                      post.status === "PAUSED"
+                                        ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/15"
+                                        : ""
+                                    }`}
                                   >
                                     {post.status}
                                   </Badge>
