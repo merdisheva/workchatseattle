@@ -31,14 +31,14 @@ const featuredEventImages = [
 ];
 
 const galleryImages = [
-  "/images/community/home-hero-roundtable.webp",
   "/images/community/home-events.webp",
-  "/images/community/home-mentorship.webp",
   "/images/community/home-community.webp",
   "/images/community/event-workshop.webp",
   "/images/community/event-audience.webp",
   "/images/community/event-networking.webp",
   "/images/community/home-mentor-friends.webp",
+  "/images/community/home-hero-roundtable.webp",
+  "/images/community/home-mentorship.webp",
 ];
 
 async function getUpcomingEvents() {
