@@ -20,7 +20,7 @@ export default async function ContactPage() {
       icon: Facebook,
       title: t("fbGroupTitle"),
       description: t("fbGroupDesc"),
-      link: "https://www.facebook.com/groups/workchatseattle",
+      link: "https://www.facebook.com/WorkChatSeattle",
       linkText: t("fbGroupLink"),
       external: true,
     },
