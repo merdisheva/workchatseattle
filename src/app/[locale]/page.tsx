@@ -31,7 +31,7 @@ const featuredEventImages = [
 ];
 
 const galleryImages = [
-  { src: "/images/community/past-event-presentation.webp", objectPosition: "object-top" },
+  { src: "/images/community/past-event-presentation-v2.webp", objectPosition: "object-top" },
   { src: "/images/community/past-event-speaker.webp", objectPosition: "object-top" },
   { src: "/images/community/home-events.webp" },
   { src: "/images/community/home-community.webp" },
