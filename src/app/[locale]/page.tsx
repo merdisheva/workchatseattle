@@ -22,8 +22,7 @@ import { prisma } from "@/lib/prisma";
 import { FormattedEventDate } from "@/components/events/EventDateTime";
 import { getTranslations, getLocale } from "next-intl/server";
 
-// Placeholder video from seattle-envelopes.org — swap for a real WorkChat Seattle video.
-const HOME_HERO_VIDEO_ID = "R85fWkJYWUg";
+const HOME_HERO_VIDEO_SRC = "/videos/home-hero-presentation.mp4";
 
 const featuredEventImages = [
   "/images/community/event-workshop.webp",
@@ -78,15 +77,17 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gray-900">
-        <div className="absolute inset-0 z-0 overflow-hidden motion-reduce:hidden">
-          <iframe
-            className="pointer-events-none absolute top-1/2 left-1/2 h-[177.78vh] min-h-full w-screen min-w-full -translate-x-1/2 -translate-y-1/2"
-            src={`https://www.youtube-nocookie.com/embed/${HOME_HERO_VIDEO_ID}?autoplay=1&mute=1&loop=1&playlist=${HOME_HERO_VIDEO_ID}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
-            title="WorkChat Seattle community video"
-            allow="autoplay; encrypted-media"
+      <section className="relative -mt-16 flex min-h-screen items-center overflow-hidden bg-gray-900">
+        <div className="absolute inset-0 z-0 motion-reduce:hidden">
+          <video
+            className="h-full w-full object-cover"
+            src={HOME_HERO_VIDEO_SRC}
+            poster="/images/community/home-hero-roundtable.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
             aria-hidden="true"
-            tabIndex={-1}
           />
         </div>
         <div className="absolute inset-0 z-0 hidden motion-reduce:block">
@@ -99,7 +100,7 @@ export default async function HomePage() {
           />
         </div>
         <div className="absolute inset-0 z-0 bg-black/50" />
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 sm:py-40 lg:px-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
               {tHero("title")}
