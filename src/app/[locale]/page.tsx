@@ -31,16 +31,16 @@ const featuredEventImages = [
 ];
 
 const galleryImages = [
-  "/images/community/past-event-presentation.webp",
-  "/images/community/past-event-speaker.webp",
-  "/images/community/home-events.webp",
-  "/images/community/home-community.webp",
-  "/images/community/event-workshop.webp",
-  "/images/community/event-audience.webp",
-  "/images/community/event-networking.webp",
-  "/images/community/home-mentor-friends.webp",
-  "/images/community/home-hero-roundtable.webp",
-  "/images/community/home-mentorship.webp",
+  { src: "/images/community/past-event-presentation.webp", objectPosition: "object-top" },
+  { src: "/images/community/past-event-speaker.webp", objectPosition: "object-top" },
+  { src: "/images/community/home-events.webp" },
+  { src: "/images/community/home-community.webp" },
+  { src: "/images/community/event-workshop.webp" },
+  { src: "/images/community/event-audience.webp" },
+  { src: "/images/community/event-networking.webp" },
+  { src: "/images/community/home-mentor-friends.webp" },
+  { src: "/images/community/home-hero-roundtable.webp" },
+  { src: "/images/community/home-mentorship.webp" },
 ];
 
 async function getUpcomingEvents() {
@@ -335,14 +335,14 @@ export default async function HomePage() {
           </div>
           <Carousel opts={{ loop: true }} className="mx-auto max-w-5xl">
             <CarouselContent>
-              {galleryImages.map((src) => (
-                <CarouselItem key={src} className="sm:basis-1/2 lg:basis-1/3">
+              {galleryImages.map((image) => (
+                <CarouselItem key={image.src} className="sm:basis-1/2 lg:basis-1/3">
                   <div className="relative h-56 overflow-hidden rounded-xl">
                     <Image
-                      src={src}
+                      src={image.src}
                       alt="WorkChat Seattle community photo"
                       fill
-                      className="object-cover"
+                      className={`object-cover ${image.objectPosition ?? ""}`}
                     />
                   </div>
                 </CarouselItem>
