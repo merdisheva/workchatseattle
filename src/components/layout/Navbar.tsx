@@ -28,7 +28,14 @@ export default function Navbar() {
 
   const navigation = [
     { name: t("home"), href: "/" },
-    { name: t("about"), href: "/about" },
+    {
+      name: t("about"),
+      href: "/about",
+      children: [
+        { name: t("aboutUs"), href: "/about" },
+        { name: t("ourTeam"), href: "/about/team" },
+      ],
+    },
     {
       name: t("events"),
       href: "/events",
