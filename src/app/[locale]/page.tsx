@@ -31,6 +31,8 @@ const featuredEventImages = [
 ];
 
 const galleryImages = [
+  "/images/community/past-event-presentation.webp",
+  "/images/community/past-event-speaker.webp",
   "/images/community/home-events.webp",
   "/images/community/home-community.webp",
   "/images/community/event-workshop.webp",
