@@ -98,23 +98,10 @@ export default function OfferDetailPage({
   const handleConnectionSubmit = async (message: string) => {
     if (!offer) return;
     try {
-      const titleText = `Requesting: ${offer.title}`;
-      const descText = `Dedicated request to collaborate on offer "${offer.title}".`;
-      
-      const createRequestRes = await fetch("/api/help/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: titleText, description: descText }),
-      });
-      
-      if (!createRequestRes.ok) throw new Error("Failed to initialize request for connection");
-      const newRequest = await createRequestRes.json();
-
       const res = await fetch("/api/help/connections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          requestId: newRequest.id,
           offerId: offer.id,
           message,
         }),

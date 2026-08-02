@@ -28,25 +28,33 @@ interface HelpOutcome {
 
 interface ConnectionData {
   id: string;
-  requestId: string;
-  offerId: string;
+  requestId: string | null;
+  offerId: string | null;
+  initiatorId: string;
   status: string;
   message: string | null;
   createdAt: string;
-  request: {
+  initiator: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
+  request?: {
+    id: string;
     title: string;
     description: string;
     userId: string;
     status: string;
     user: { name: string | null; image: string | null };
-  };
-  offer: {
+  } | null;
+  offer?: {
+    id: string;
     title: string;
     description: string;
     userId: string;
     status: string;
     user: { name: string | null; image: string | null };
-  };
+  } | null;
   outcomes: HelpOutcome[];
 }
 
@@ -65,7 +73,6 @@ export default function ConnectionDetailPage({
     }
   }, [status, router]);
   
-  // Unwrap params using React.use()
   const { id: connectionId } = use(params);
 
   const [connection, setConnection] = useState<ConnectionData | null>(null);
@@ -127,21 +134,44 @@ export default function ConnectionDetailPage({
     );
   }
 
-  const isRequester = connection.request.userId === session?.user?.id;
-  const partnerName = isRequester
-    ? connection.offer.user.name || "Helper"
-    : connection.request.user.name || "Requester";
-  const partnerImage = isRequester
-    ? connection.offer.user.image
-    : connection.request.user.image;
+  // Resolve roles and partner details
+  const isInitiator = connection.initiatorId === session?.user?.id;
+  let partnerName = "Partner";
+  let partnerImage = null;
+
+  if (isInitiator) {
+    if (connection.request) {
+      partnerName = connection.request.user.name || "Requester";
+      partnerImage = connection.request.user.image;
+    } else if (connection.offer) {
+      partnerName = connection.offer.user.name || "Helper";
+      partnerImage = connection.offer.user.image;
+    }
+  } else {
+    partnerName = connection.initiator.name || "Partner";
+    partnerImage = connection.initiator.image;
+  }
+
+  const requesterUserId = connection.requestId ? connection.request?.userId : connection.initiatorId;
+  const helperUserId = connection.offerId ? connection.offer?.userId : connection.initiatorId;
+
+  const requesterName = connection.requestId
+    ? (connection.request?.user.name || "Requester")
+    : (connection.initiator.name || "Requester");
+  const helperName = connection.offerId
+    ? (connection.offer?.user.name || "Helper")
+    : (connection.initiator.name || "Helper");
+
+  const requesterImage = connection.requestId ? connection.request?.user.image : connection.initiator.image;
+  const helperImage = connection.offerId ? connection.offer?.user.image : connection.initiator.image;
 
   const myOutcome = connection.outcomes.find((o) => o.userId === session?.user?.id);
   const partnerOutcome = connection.outcomes.find((o) => o.userId !== session?.user?.id);
 
   const handleOutcomeSubmit = async (content: string, rating: number | null, isPublic: boolean, unpause: boolean) => {
     try {
-      const isRequester = connection.request.userId === session?.user?.id;
-      const isHelper = connection.offer.userId === session?.user?.id;
+      const isReq = requesterUserId === session?.user?.id;
+      const isHelp = helperUserId === session?.user?.id;
 
       const res = await fetch(`/api/help/connections/${connectionId}/outcome`, {
         method: "POST",
@@ -150,8 +180,8 @@ export default function ConnectionDetailPage({
           content,
           rating,
           isPublic,
-          unpauseRequest: isRequester ? unpause : undefined,
-          unpauseOffer: isHelper ? unpause : undefined,
+          unpauseRequest: isReq ? unpause : undefined,
+          unpauseOffer: isHelp ? unpause : undefined,
         }),
       });
 
@@ -232,28 +262,32 @@ export default function ConnectionDetailPage({
           <Card className="border border-border/50 bg-card/65 backdrop-blur-sm shadow-sm">
             <CardHeader>
               <CardTitle className="text-xl font-bold">Connection Space</CardTitle>
-              <CardDescription>Details of the matched help request and offer.</CardDescription>
+              <CardDescription>Details of the matched help post.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Help Request */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Badge variant="destructive" className="font-semibold text-[10px]">REQUEST</Badge>
-                  <h4 className="text-sm font-bold text-foreground">{connection.request.title}</h4>
+              {connection.request && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="destructive" className="font-semibold text-[10px]">REQUEST</Badge>
+                    <h4 className="text-sm font-bold text-foreground">{connection.request.title}</h4>
+                  </div>
+                  <p className="text-xs text-muted-foreground whitespace-pre-wrap pl-6">{connection.request.description}</p>
                 </div>
-                <p className="text-xs text-muted-foreground whitespace-pre-wrap pl-6">{connection.request.description}</p>
-              </div>
+              )}
 
-              <Separator className="bg-border/40" />
+              {connection.request && connection.offer && <Separator className="bg-border/40" />}
 
               {/* Help Offer */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Badge variant="default" className="font-semibold text-[10px]">OFFER</Badge>
-                  <h4 className="text-sm font-bold text-foreground">{connection.offer.title}</h4>
+              {connection.offer && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="default" className="font-semibold text-[10px]">OFFER</Badge>
+                    <h4 className="text-sm font-bold text-foreground">{connection.offer.title}</h4>
+                  </div>
+                  <p className="text-xs text-muted-foreground whitespace-pre-wrap pl-6">{connection.offer.description}</p>
                 </div>
-                <p className="text-xs text-muted-foreground whitespace-pre-wrap pl-6">{connection.offer.description}</p>
-              </div>
+              )}
 
               {connection.message && (
                 <>
@@ -282,23 +316,23 @@ export default function ConnectionDetailPage({
                 <Card className="border border-border/50 bg-card/65 shadow-sm">
                   <CardHeader className="flex flex-row items-center gap-3">
                     <Avatar className="h-9 w-9 border border-border">
-                      {connection.request.user.image && (
-                        <AvatarImage src={connection.request.user.image} />
+                      {requesterImage && (
+                        <AvatarImage src={requesterImage} />
                       )}
                       <AvatarFallback className="text-[10px] bg-muted font-bold">
-                        {getInitials(connection.request.user.name)}
+                        {getInitials(requesterName)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <CardTitle className="text-xs font-bold text-foreground">{t("requesterPerspective")}</CardTitle>
-                      <CardDescription className="text-[10px]">{connection.request.user.name}</CardDescription>
+                      <CardDescription className="text-[10px]">{requesterName}</CardDescription>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <p className="text-xs text-muted-foreground whitespace-pre-wrap italic">
-                      "{connection.outcomes.find((o) => o.userId === connection.request.userId)?.content || "No review left."}"
+                      "{connection.outcomes.find((o) => o.userId === requesterUserId)?.content || "No review left."}"
                     </p>
-                    {renderStars(connection.outcomes.find((o) => o.userId === connection.request.userId)?.rating ?? null)}
+                    {renderStars(connection.outcomes.find((o) => o.userId === requesterUserId)?.rating ?? null)}
                   </CardContent>
                 </Card>
 
@@ -306,23 +340,23 @@ export default function ConnectionDetailPage({
                 <Card className="border border-border/50 bg-card/65 shadow-sm">
                   <CardHeader className="flex flex-row items-center gap-3">
                     <Avatar className="h-9 w-9 border border-border">
-                      {connection.offer.user.image && (
-                        <AvatarImage src={connection.offer.user.image} />
+                      {helperImage && (
+                        <AvatarImage src={helperImage} />
                       )}
                       <AvatarFallback className="text-[10px] bg-muted font-bold">
-                        {getInitials(connection.offer.user.name)}
+                        {getInitials(helperName)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <CardTitle className="text-xs font-bold text-foreground">{t("helperPerspective")}</CardTitle>
-                      <CardDescription className="text-[10px]">{connection.offer.user.name}</CardDescription>
+                      <CardDescription className="text-[10px]">{helperName}</CardDescription>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <p className="text-xs text-muted-foreground whitespace-pre-wrap italic">
-                      "{connection.outcomes.find((o) => o.userId === connection.offer.userId)?.content || "No review left."}"
+                      "{connection.outcomes.find((o) => o.userId === helperUserId)?.content || "No review left."}"
                     </p>
-                    {renderStars(connection.outcomes.find((o) => o.userId === connection.offer.userId)?.rating ?? null)}
+                    {renderStars(connection.outcomes.find((o) => o.userId === helperUserId)?.rating ?? null)}
                   </CardContent>
                 </Card>
               </div>
@@ -409,12 +443,14 @@ export default function ConnectionDetailPage({
         onSubmit={handleOutcomeSubmit}
         partnerName={partnerName}
         showUnpauseOption={
-          connection.request.userId === session?.user?.id
+          connection.request && connection.request.userId === session?.user?.id
             ? connection.request.status === "PAUSED"
-            : connection.offer.status === "PAUSED"
+            : connection.offer && connection.offer.userId === session?.user?.id
+            ? connection.offer.status === "PAUSED"
+            : false
         }
         unpauseLabel={
-          connection.request.userId === session?.user?.id
+          connection.request && connection.request.userId === session?.user?.id
             ? "Unpause my request so it is active again"
             : "Unpause my offer so it is active again"
         }

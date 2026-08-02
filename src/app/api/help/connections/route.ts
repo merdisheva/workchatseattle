@@ -13,11 +13,19 @@ export async function GET() {
     const connections = await prisma.helpConnection.findMany({
       where: {
         OR: [
+          { initiatorId: session.user.id },
           { request: { userId: session.user.id } },
           { offer: { userId: session.user.id } },
         ],
       },
       include: {
+        initiator: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
         request: {
           include: {
             user: {
@@ -79,66 +87,82 @@ export async function POST(request: NextRequest) {
   try {
     const { requestId, offerId, message } = await request.json();
 
-    if (!requestId || !offerId) {
+    if (!requestId && !offerId) {
       return NextResponse.json(
-        { error: "requestId and offerId are required" },
+        { error: "requestId or offerId is required" },
         { status: 400 }
       );
     }
 
-    // Load request and offer to verify ownership and existence
-    const [helpRequest, helpOffer] = await Promise.all([
-      prisma.helpRequest.findUnique({ where: { id: requestId } }),
-      prisma.helpOffer.findUnique({ where: { id: offerId } }),
-    ]);
+    if (requestId) {
+      const helpRequest = await prisma.helpRequest.findUnique({ where: { id: requestId } });
+      if (!helpRequest) {
+        return NextResponse.json({ error: "Help request not found" }, { status: 404 });
+      }
+      if (helpRequest.status === "PAUSED") {
+        return NextResponse.json({ error: "Cannot connect: This post is paused" }, { status: 400 });
+      }
+      if (helpRequest.userId === session.user.id) {
+        return NextResponse.json({ error: "Forbidden: You cannot connect to your own request" }, { status: 403 });
+      }
 
-    if (!helpRequest || !helpOffer) {
-      return NextResponse.json(
-        { error: "Help request or help offer not found" },
-        { status: 404 }
-      );
-    }
-
-    if (helpRequest.status === "PAUSED" || helpOffer.status === "PAUSED") {
-      return NextResponse.json(
-        { error: "Cannot connect: This post is paused" },
-        { status: 400 }
-      );
-    }
-
-    // Verify caller is one of the parties
-    if (helpRequest.userId !== session.user.id && helpOffer.userId !== session.user.id) {
-      return NextResponse.json(
-        { error: "Forbidden: You must own either the request or the offer to propose a connection" },
-        { status: 403 }
-      );
-    }
-
-    // Check for existing connection between this request and offer
-    const existingConnection = await prisma.helpConnection.findUnique({
-      where: {
-        requestId_offerId: {
-          requestId,
-          offerId,
+      // Check unique constraint for initiator + requestId
+      const existingConnection = await prisma.helpConnection.findUnique({
+        where: {
+          requestId_initiatorId: {
+            requestId,
+            initiatorId: session.user.id,
+          },
         },
-      },
-    });
+      });
+      if (existingConnection) {
+        return NextResponse.json(existingConnection);
+      }
 
-    if (existingConnection) {
-      return NextResponse.json(existingConnection);
+      const connection = await prisma.helpConnection.create({
+        data: {
+          requestId,
+          initiatorId: session.user.id,
+          message,
+          status: "PENDING",
+        },
+      });
+      return NextResponse.json(connection);
+    } else {
+      const helpOffer = await prisma.helpOffer.findUnique({ where: { id: offerId } });
+      if (!helpOffer) {
+        return NextResponse.json({ error: "Help offer not found" }, { status: 404 });
+      }
+      if (helpOffer.status === "PAUSED") {
+        return NextResponse.json({ error: "Cannot connect: This post is paused" }, { status: 400 });
+      }
+      if (helpOffer.userId === session.user.id) {
+        return NextResponse.json({ error: "Forbidden: You cannot connect to your own offer" }, { status: 403 });
+      }
+
+      // Check unique constraint for initiator + offerId
+      const existingConnection = await prisma.helpConnection.findUnique({
+        where: {
+          offerId_initiatorId: {
+            offerId,
+            initiatorId: session.user.id,
+          },
+        },
+      });
+      if (existingConnection) {
+        return NextResponse.json(existingConnection);
+      }
+
+      const connection = await prisma.helpConnection.create({
+        data: {
+          offerId,
+          initiatorId: session.user.id,
+          message,
+          status: "PENDING",
+        },
+      });
+      return NextResponse.json(connection);
     }
-
-    // Create the connection (status is PENDING by default)
-    const connection = await prisma.helpConnection.create({
-      data: {
-        requestId,
-        offerId,
-        message,
-        status: "PENDING",
-      },
-    });
-
-    return NextResponse.json(connection);
   } catch (error) {
     console.error("Failed to propose connection:", error);
     return NextResponse.json(

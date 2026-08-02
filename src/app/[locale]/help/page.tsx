@@ -93,60 +93,12 @@ export default function HelpBoardPage() {
     if (!selectedItem) return;
 
     try {
-      // For connections, we need a requestId and an offerId.
-      // If connecting to a request: we are the helper, so we need to link it with one of our offers.
-      // Wait! If the current user doesn't have an offer, we can auto-create one or just create a stub.
-      // But we can check: if connecting to a request, we need to send requestId and we can create/find a connection.
-      // Wait, in our DB, a HelpConnection requires both a HelpRequest AND a HelpOffer.
-      // So if User B wants to help User A's HelpRequest, User B must have a HelpOffer.
-      // What if User B doesn't have a HelpOffer yet?
-      // We can auto-create a simple private HelpOffer for User B matching A's request title!
-      // This is a beautiful UX solution: B gets a HelpOffer automatically generated (e.g. "Response to: [Request Title]") so the DB connection satisfies referential integrity!
-      // Let's implement this logic in our submission:
-      // - Find or create an offer for the caller (if they are connecting to a request).
-      // - Find or create a request for the caller (if they are connecting to an offer).
-      // Let's handle this in our client submit logic.
-      
-      let finalRequestId = selectedType === "request" ? selectedItem.id : "";
-      let finalOfferId = selectedType === "offer" ? selectedItem.id : "";
-
-      if (selectedType === "request") {
-        // We are connecting to a request, so we are the helper. We need an offer.
-        // Let's check if the user already has an active offer. We can create a simple one on the fly.
-        const titleText = `Helping: ${selectedItem.title}`;
-        const descText = `Dedicated offer to collaborate on request "${selectedItem.title}".`;
-        
-        const createOfferRes = await fetch("/api/help/offers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: titleText, description: descText }),
-        });
-        
-        if (!createOfferRes.ok) throw new Error("Failed to initialize offer for connection");
-        const newOffer = await createOfferRes.json();
-        finalOfferId = newOffer.id;
-      } else {
-        // We are connecting to an offer, so we need a request.
-        const titleText = `Requesting: ${selectedItem.title}`;
-        const descText = `Dedicated request to collaborate on offer "${selectedItem.title}".`;
-        
-        const createRequestRes = await fetch("/api/help/requests", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: titleText, description: descText }),
-        });
-        
-        if (!createRequestRes.ok) throw new Error("Failed to initialize request for connection");
-        const newRequest = await createRequestRes.json();
-        finalRequestId = newRequest.id;
-      }
-
       const res = await fetch("/api/help/connections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          requestId: finalRequestId,
-          offerId: finalOfferId,
+          requestId: selectedType === "request" ? selectedItem.id : undefined,
+          offerId: selectedType === "offer" ? selectedItem.id : undefined,
           message,
         }),
       });

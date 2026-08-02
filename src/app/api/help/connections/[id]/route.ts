@@ -17,6 +17,13 @@ export async function GET(
     const connection = await prisma.helpConnection.findUnique({
       where: { id },
       include: {
+        initiator: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
         request: {
           include: {
             user: {
@@ -58,10 +65,12 @@ export async function GET(
     }
 
     // Verify user is part of the connection
-    if (
-      connection.request.userId !== session.user.id &&
-      connection.offer.userId !== session.user.id
-    ) {
+    const isOwner =
+      connection.initiatorId === session.user.id ||
+      connection.request?.userId === session.user.id ||
+      connection.offer?.userId === session.user.id;
+
+    if (!isOwner) {
       return NextResponse.json({ error: "Forbidden: You are not part of this connection" }, { status: 403 });
     }
 
@@ -100,10 +109,12 @@ export async function PUT(
     }
 
     // Verify user is part of the connection
-    if (
-      connection.request.userId !== session.user.id &&
-      connection.offer.userId !== session.user.id
-    ) {
+    const isOwner =
+      connection.initiatorId === session.user.id ||
+      connection.request?.userId === session.user.id ||
+      connection.offer?.userId === session.user.id;
+
+    if (!isOwner) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -122,7 +133,7 @@ export async function PUT(
     // Side-effects: if connection is accepted, check if we should pause offer or request
     if (status === "ACCEPTED") {
       const updates = [];
-      if (pauseOffer) {
+      if (pauseOffer && connection.offerId) {
         updates.push(
           prisma.helpOffer.update({
             where: { id: connection.offerId },
@@ -130,7 +141,7 @@ export async function PUT(
           })
         );
       }
-      if (pauseRequest) {
+      if (pauseRequest && connection.requestId) {
         updates.push(
           prisma.helpRequest.update({
             where: { id: connection.requestId },

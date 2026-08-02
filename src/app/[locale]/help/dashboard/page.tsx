@@ -24,21 +24,29 @@ interface HelpPost {
 
 interface ConnectionItem {
   id: string;
-  requestId: string;
-  offerId: string;
+  requestId: string | null;
+  offerId: string | null;
+  initiatorId: string;
   status: string;
   message: string | null;
   createdAt: string;
-  request: {
+  initiator: {
+    id: string;
+    name: string | null;
+    image: string | null;
+  };
+  request?: {
     title: string;
     userId: string;
+    status: string;
     user: { name: string | null; image: string | null };
-  };
-  offer: {
+  } | null;
+  offer?: {
     title: string;
     userId: string;
+    status: string;
     user: { name: string | null; image: string | null };
-  };
+  } | null;
 }
 
 export default function HelpDashboardPage() {
@@ -164,7 +172,7 @@ export default function HelpDashboardPage() {
   };
 
   const handleAcceptConnection = async (conn: ConnectionItem) => {
-    const isOfferAuthor = conn.offer.userId === session?.user?.id;
+    const isOfferAuthor = conn.offer && conn.offer.userId === session?.user?.id;
     let pauseOffer = false;
     if (isOfferAuthor) {
       pauseOffer = confirm("Would you like to pause your help offer? (Click Cancel to keep it open so others can still connect with it.)");
@@ -192,55 +200,15 @@ export default function HelpDashboardPage() {
   // Divide connections into respective columns
   const incomingProposals = connections.filter((conn) => {
     const isPending = conn.status === "PENDING";
-    // We are the recipient if we own the target post that is NOT the proposer's.
-    // Proposer is the one who initiated the action. In our setup, B proposes to A.
-    // If we own the request and the proposer owns the offer, or vice-versa.
-    // Wait, let's distinguish simply:
-    // If the request userId matches us, and we didn't propose?
-    // Let's check: B owns the offer, B proposes to A (A owns request). So A is the recipient (Request Owner is Recipient).
-    // If A owns the offer, and B proposes to A (B owns request). A is the recipient (Offer Owner is Recipient).
-    // In our client matching, when we click "Connect", we auto-create a stub of the other type.
-    // The proposer is the one who created the stub!
-    // Since stubs are created on-the-fly, how do we identify the proposer?
-    // Let's identify the proposer by looking at the createdAt times, OR simply:
-    // The stub was created *at the same time* as the connection itself.
-    // So B creates a connection: they created a new stub (e.g. B's offer) at the same time.
-    // A more reliable way: in `/api/help/connections/route.ts` we can assume the proposer is the caller.
-    // But since we didn't store `proposerId`, let's see if we can deduce it:
-    // - If we are the requester, and the offer was created at the exact same second as the connection, we are the proposer?
-    // Actually, let's look at the connection message: B proposed it.
-    // To make it simple:
-    // Let's define "Incoming Proposals" as connections that are `PENDING` where the other party owns the "original" post.
-    // In our `page.tsx` matching:
-    // - If A connects to B's Offer: A is the requester (new request created), B is the helper (existing offer). B is the recipient.
-    // - If A connects to B's Request: A is the helper (new offer created), B is the requester (existing request). B is the recipient.
-    // In both cases, the recipient is the owner of the *original* post (the post B owns).
-    // Who is the owner of the original post? The one that was NOT created on-the-fly.
-    // Since stubs have titles like "Helping: ..." or "Requesting: ...", the original post has a normal title.
-    // Or we can just check: does the offer creator equal us, and the request was created after/same-time?
-    // A simpler way: we show all PENDING connections in a "Pending Matches" section and let the user accept or decline if they want!
-    // Letting either participant Accept/Decline makes it very robust and avoids state mismatch.
-    // Let's display "Pending Connections" and "Active Connections".
-    // If pending, who is allowed to accept?
-    // If we are the recipient of the connection:
-    // If B initiated the match, B created a stub.
-    // - B connects to A's Request: B auto-created B's Offer. So B is the helper, A is the requester. A is the recipient.
-    // - B connects to A's Offer: B auto-created B's Request. So B is the requester, A is the helper. A is the recipient.
-    // So the recipient is always the owner of the *original* post, i.e., A (which is us if we own the request but did not initiate).
-    // Let's write a simple selector:
-    // If we own the request AND the offer title starts with "Helping: ", we are the recipient!
-    // If we own the offer AND the request title starts with "Requesting: ", we are the recipient!
     const isRecipient =
-      (conn.request.userId === session?.user?.id && conn.offer.title.startsWith("Helping:")) ||
-      (conn.offer.userId === session?.user?.id && conn.request.title.startsWith("Requesting:"));
+      (conn.request && conn.request.userId === session?.user?.id && conn.initiatorId !== session?.user?.id) ||
+      (conn.offer && conn.offer.userId === session?.user?.id && conn.initiatorId !== session?.user?.id);
     return isPending && isRecipient;
   });
 
   const outgoingProposals = connections.filter((conn) => {
     const isPending = conn.status === "PENDING";
-    const isProposer =
-      (conn.offer.userId === session?.user?.id && conn.offer.title.startsWith("Helping:")) ||
-      (conn.request.userId === session?.user?.id && conn.request.title.startsWith("Requesting:"));
+    const isProposer = conn.initiatorId === session?.user?.id;
     return isPending && isProposer;
   });
 
@@ -248,17 +216,27 @@ export default function HelpDashboardPage() {
   const completedCollaborations = connections.filter((conn) => conn.status === "COMPLETED");
 
   const getPartnerName = (conn: ConnectionItem) => {
-    if (conn.request.userId === session?.user?.id) {
-      return conn.offer.user.name || "Community Helper";
+    const isInitiator = conn.initiatorId === session?.user?.id;
+    if (isInitiator) {
+      return conn.request
+        ? (conn.request.user.name || "Community Member")
+        : (conn.offer?.user.name || "Community Member");
     }
-    return conn.request.user.name || "Community Member";
+    return conn.initiator.name || "Community Member";
   };
 
   const getPartnerImage = (conn: ConnectionItem) => {
-    if (conn.request.userId === session?.user?.id) {
-      return conn.offer.user.image;
+    const isInitiator = conn.initiatorId === session?.user?.id;
+    if (isInitiator) {
+      return conn.request ? conn.request.user.image : conn.offer?.user.image;
     }
-    return conn.request.user.image;
+    return conn.initiator.image;
+  };
+
+  const getConnectionTitle = (conn: ConnectionItem) => {
+    if (conn.request) return conn.request.title;
+    if (conn.offer) return conn.offer.title;
+    return "Collaboration Post";
   };
 
   return (
@@ -337,7 +315,7 @@ export default function HelpDashboardPage() {
                                 {getPartnerName(conn)}
                               </TableCell>
                               <TableCell className="max-w-[200px] truncate text-xs font-medium">
-                                {conn.request.userId === session?.user?.id ? conn.request.title : conn.offer.title}
+                                {getConnectionTitle(conn)}
                               </TableCell>
                               <TableCell className="max-w-[300px] truncate text-xs text-muted-foreground">
                                 {conn.message || "No introduction message."}
@@ -386,8 +364,7 @@ export default function HelpDashboardPage() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Collaborator</TableHead>
-                            <TableHead>Request</TableHead>
-                            <TableHead>Offer</TableHead>
+                            <TableHead>Matched Post</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -397,11 +374,8 @@ export default function HelpDashboardPage() {
                               <TableCell className="font-semibold text-sm">
                                 {getPartnerName(conn)}
                               </TableCell>
-                              <TableCell className="max-w-[200px] truncate text-xs font-medium">
-                                {conn.request.title}
-                              </TableCell>
-                              <TableCell className="max-w-[200px] truncate text-xs font-medium">
-                                {conn.offer.title}
+                              <TableCell className="max-w-[300px] truncate text-xs font-medium">
+                                {getConnectionTitle(conn)}
                               </TableCell>
                               <TableCell className="text-right">
                                   <Button size="sm" variant="outline" className="text-[11px] font-semibold flex items-center gap-1.5 ml-auto" asChild>
@@ -452,7 +426,7 @@ export default function HelpDashboardPage() {
                                 {getPartnerName(conn)}
                               </TableCell>
                               <TableCell className="max-w-[200px] truncate text-xs font-medium">
-                                {conn.request.userId === session?.user?.id ? conn.offer.title : conn.request.title}
+                                {getConnectionTitle(conn)}
                               </TableCell>
                               <TableCell>
                                 <Badge variant="secondary" className="text-[10px] uppercase font-semibold">
@@ -494,8 +468,7 @@ export default function HelpDashboardPage() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Collaborator</TableHead>
-                            <TableHead>Request</TableHead>
-                            <TableHead>Offer</TableHead>
+                            <TableHead>Matched Post</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -505,11 +478,8 @@ export default function HelpDashboardPage() {
                               <TableCell className="font-semibold text-sm">
                                 {getPartnerName(conn)}
                               </TableCell>
-                              <TableCell className="max-w-[200px] truncate text-xs font-medium">
-                                {conn.request.title}
-                              </TableCell>
-                              <TableCell className="max-w-[200px] truncate text-xs font-medium">
-                                {conn.offer.title}
+                              <TableCell className="max-w-[300px] truncate text-xs font-medium">
+                                {getConnectionTitle(conn)}
                               </TableCell>
                               <TableCell className="text-right">
                                 <Button size="sm" variant="ghost" className="text-[11px] font-semibold flex items-center gap-1.5 ml-auto hover:bg-accent" asChild>

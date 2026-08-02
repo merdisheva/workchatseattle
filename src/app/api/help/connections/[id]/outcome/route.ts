@@ -41,8 +41,16 @@ export async function POST(
     }
 
     // Verify caller is part of the connection
-    const isRequester = connection.request.userId === session.user.id;
-    const isHelper = connection.offer.userId === session.user.id;
+    let isRequester = false;
+    let isHelper = false;
+
+    if (connection.requestId) {
+      isRequester = connection.request?.userId === session.user.id;
+      isHelper = connection.initiatorId === session.user.id;
+    } else if (connection.offerId) {
+      isHelper = connection.offer?.userId === session.user.id;
+      isRequester = connection.initiatorId === session.user.id;
+    }
 
     if (!isRequester && !isHelper) {
       return NextResponse.json(
@@ -61,26 +69,26 @@ export async function POST(
       },
       update: {
         content,
-        rating: rating !== undefined ? parseInt(rating) : undefined,
+        rating: rating !== undefined && rating !== null ? parseInt(rating) : undefined,
         isPublic: isPublic ?? false,
       },
       create: {
         connectionId,
         userId: session.user.id,
         content,
-        rating: rating !== undefined ? parseInt(rating) : undefined,
+        rating: rating !== undefined && rating !== null ? parseInt(rating) : undefined,
         isPublic: isPublic ?? false,
       },
     });
 
     // Perform unpausing if requested by the respective participant
-    if (isRequester && unpauseRequest) {
+    if (isRequester && unpauseRequest && connection.requestId) {
       await prisma.helpRequest.update({
         where: { id: connection.requestId },
         data: { status: "OPEN" },
       });
     }
-    if (isHelper && unpauseOffer) {
+    if (isHelper && unpauseOffer && connection.offerId) {
       await prisma.helpOffer.update({
         where: { id: connection.offerId },
         data: { status: "OPEN" },
