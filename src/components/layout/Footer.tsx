@@ -19,7 +19,7 @@ export default function Footer() {
             </p>
             <div className="mt-4 flex space-x-4">
               <a
-                href="https://www.facebook.com/groups/workchatseattle"
+                href="https://www.facebook.com/WorkChatSeattle"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary"
@@ -99,7 +99,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://www.facebook.com/groups/workchatseattle"
+                  href="https://www.facebook.com/WorkChatSeattle"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-foreground"

@@ -1,11 +1,47 @@
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { ArrowRight, Users, Calendar, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Users,
+  Calendar,
+  Sparkles,
+  Heart,
+  Megaphone,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 import { prisma } from "@/lib/prisma";
 import { FormattedEventDate } from "@/components/events/EventDateTime";
 import { getTranslations, getLocale } from "next-intl/server";
+
+const HOME_HERO_VIDEO_SRC = "/videos/home-hero-presentation.mp4";
+
+const featuredEventImages = [
+  "/images/community/event-workshop.webp",
+  "/images/community/event-audience.webp",
+  "/images/community/event-networking.webp",
+];
+
+const galleryImages = [
+  "/images/community/past-event-presentation.webp",
+  "/images/community/past-event-speaker.webp",
+  "/images/community/home-events.webp",
+  "/images/community/home-community.webp",
+  "/images/community/event-workshop.webp",
+  "/images/community/event-audience.webp",
+  "/images/community/event-networking.webp",
+  "/images/community/home-mentor-friends.webp",
+  "/images/community/home-hero-roundtable.webp",
+  "/images/community/home-mentorship.webp",
+];
 
 async function getUpcomingEvents() {
   const events = await prisma.event.findMany({
@@ -43,17 +79,30 @@ export default async function HomePage() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gray-900">
-        <div className="absolute inset-0 z-0">
+      <section className="relative -mt-16 flex min-h-screen items-center overflow-hidden bg-gray-900">
+        <div className="absolute inset-0 z-0 motion-reduce:hidden">
+          <video
+            className="h-full w-full object-cover"
+            src={HOME_HERO_VIDEO_SRC}
+            poster="/images/community/home-hero-roundtable.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden="true"
+          />
+        </div>
+        <div className="absolute inset-0 z-0 hidden motion-reduce:block">
           <Image
-            src="https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=1920&q=80"
-            alt="Women collaborating"
+            src="/images/community/home-hero-roundtable.webp"
+            alt="WorkChat Seattle members at a community event"
             fill
-            className="object-cover brightness-[0.3]"
+            className="object-cover"
             priority
           />
         </div>
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 sm:py-40 lg:px-8">
+        <div className="absolute inset-0 z-0 bg-black/50" />
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
               {tHero("title")}
@@ -77,6 +126,21 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Mission Section */}
+      <section className="py-20">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold">{t("missionTitle")}</h2>
+          <p className="mt-4 text-muted-foreground">{t("missionText")}</p>
+          <Link
+            href="/about"
+            className="mt-4 inline-flex items-center text-sm font-medium text-primary hover:underline"
+          >
+            {t("missionLearnMore")}
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -90,8 +154,8 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1768508950520-541f4a08758d?w=600&q=80"
-                  alt="Professional event"
+                  src="/images/community/home-events.webp"
+                  alt="WorkChat Seattle panel discussion"
                   fill
                   className="object-cover"
                 />
@@ -110,8 +174,8 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80"
-                  alt="Mentorship session"
+                  src="/images/community/home-mentorship.webp"
+                  alt="WorkChat Seattle members collaborating"
                   fill
                   className="object-cover"
                 />
@@ -130,8 +194,8 @@ export default async function HomePage() {
             <Card className="overflow-hidden border-none shadow-lg">
               <div className="relative h-48">
                 <Image
-                  src="https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=600&q=80"
-                  alt="Community gathering"
+                  src="/images/community/home-community.webp"
+                  alt="WorkChat Seattle community group"
                   fill
                   className="object-cover"
                 />
@@ -169,17 +233,12 @@ export default async function HomePage() {
                 <Card key={event.id} className="overflow-hidden">
                   <div className="relative h-40">
                     <Image
-                      src={`https://images.unsplash.com/photo-${index === 0
-                          ? "1555725305-e823b44548de"
-                          : index === 1
-                            ? "1551731409-43eb3e517a1a"
-                            : "1776039324982-449086984ceb"
-                        }?w=600&q=80`}
+                      src={featuredEventImages[index]}
                       alt={event.title}
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-3 left-3 flex items-center gap-2">
                       <span className="rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
                         {event.isOnline ? t("online") : t("inPerson")}
@@ -211,10 +270,10 @@ export default async function HomePage() {
       <section className="relative py-20 bg-gray-900">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1573496546038-82f9c39f6365?w=1920&q=80"
-            alt="Mentorship"
+            src="/images/community/home-mentor-friends.webp"
+            alt="Two WorkChat Seattle community members"
             fill
-            className="object-cover brightness-[0.25]"
+            className="object-cover brightness-[0.45]"
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -264,6 +323,158 @@ export default async function HomePage() {
               <div className="mt-2 text-muted-foreground">{t("statsMentors")}</div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Photo Gallery */}
+      <section className="bg-muted/30 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-bold">{t("galleryTitle")}</h2>
+            <p className="mt-4 text-muted-foreground">{t("gallerySubtitle")}</p>
+          </div>
+          <Carousel opts={{ loop: true }} className="mx-auto max-w-5xl">
+            <CarouselContent>
+              {galleryImages.map((src) => (
+                <CarouselItem key={src} className="sm:basis-1/2 lg:basis-1/3">
+                  <div className="relative h-56 overflow-hidden rounded-xl">
+                    <Image
+                      src={src}
+                      alt="WorkChat Seattle community photo"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="-left-4 sm:-left-12" />
+            <CarouselNext className="-right-4 sm:-right-12" />
+          </Carousel>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-bold">{t("testimonialsTitle")}</h2>
+            <p className="mt-4 text-muted-foreground">
+              {t("testimonialsSubtitle")}
+            </p>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="border-none shadow-lg">
+                <CardContent className="pt-6">
+                  <p className="text-sm text-muted-foreground italic">
+                    &ldquo;{t(`testimonial${i}Quote`)}&rdquo;
+                  </p>
+                  <div className="mt-6 flex items-center gap-3">
+                    <Avatar size="lg">
+                      <AvatarFallback>
+                        {t(`testimonial${i}Name`).charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm font-semibold">
+                      {t(`testimonial${i}Name`)}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Ways to Help */}
+      <section className="bg-muted/30 py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-bold">{t("waysToHelpTitle")}</h2>
+            <p className="mt-4 text-muted-foreground">
+              {t("waysToHelpSubtitle")}
+            </p>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3">
+            <Card className="border-none shadow-lg">
+              <CardContent className="pt-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold">
+                  {t("waysToHelpMentorTitle")}
+                </h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {t("waysToHelpMentorDesc")}
+                </p>
+                <Link
+                  href="/mentor/register"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {t("becomeMentor")}
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg">
+              <CardContent className="pt-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-secondary/10">
+                  <Calendar className="h-6 w-6 text-secondary" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold">
+                  {t("waysToHelpEventsTitle")}
+                </h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {t("waysToHelpEventsDesc")}
+                </p>
+                <Link
+                  href="/contact"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {t("waysToHelpEventsLink")}
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg">
+              <CardContent className="pt-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10">
+                  <Megaphone className="h-6 w-6 text-accent-foreground" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold">
+                  {t("waysToHelpShareTitle")}
+                </h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {t("waysToHelpShareDesc")}
+                </p>
+                <a
+                  href="https://www.facebook.com/groups/workchatseattle"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {t("waysToHelpShareLink")}
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Donate */}
+      <section className="bg-gradient-to-r from-primary to-primary/80 py-20">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <Heart className="mx-auto mb-4 h-10 w-10 text-white" />
+          <h2 className="text-3xl font-bold text-white">{t("donateTitle")}</h2>
+          <p className="mt-4 text-white/90">{t("donateDesc")}</p>
+          <Button
+            size="lg"
+            className="mt-8 bg-white text-primary hover:bg-white/90"
+            asChild
+          >
+            <Link href="/contact">{t("donateBtn")}</Link>
+          </Button>
         </div>
       </section>
 

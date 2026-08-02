@@ -44,10 +44,10 @@ export default async function AboutPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1556565681-306458ef93cd?w=1920&q=80"
-            alt="Team collaboration"
+            src="/images/community/about-hero.webp"
+            alt="WorkChat Seattle community gathering"
             fill
-            className="object-cover brightness-[0.35]"
+            className="object-cover brightness-[0.52]"
             priority
           />
         </div>
@@ -69,8 +69,8 @@ export default async function AboutPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="relative h-[400px] overflow-hidden rounded-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1551836022-4c4c79ecde51?w=800&q=80"
-                alt="Women networking"
+                src="/images/community/about-mission-audience.webp"
+                alt="WorkChat Seattle networking roundtable"
                 fill
                 className="object-cover"
               />
@@ -140,8 +140,8 @@ export default async function AboutPage() {
             </div>
             <div className="relative order-1 h-[400px] overflow-hidden rounded-2xl lg:order-2">
               <Image
-                src="https://images.unsplash.com/photo-1573496130141-209d200cebd8?w=800&q=80"
-                alt="Workshop session"
+                src="/images/community/about-workshop.webp"
+                alt="WorkChat Seattle workshop panel"
                 fill
                 className="object-cover"
               />
@@ -179,10 +179,10 @@ export default async function AboutPage() {
       <section className="relative py-20">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1502175353174-a7a70e73b362?w=1920&q=80"
-            alt="Seattle skyline"
+            src="/images/community/about-seattle-skyline.webp"
+            alt="Seattle skyline with the Space Needle and Mount Rainier"
             fill
-            className="object-cover brightness-[0.3]"
+            className="object-cover brightness-[0.5]"
           />
         </div>
         <div className="relative z-10 mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
@@ -191,6 +191,14 @@ export default async function AboutPage() {
             {t("seattleDesc")}
           </p>
         </div>
+        <a
+          href="https://commons.wikimedia.org/wiki/File:Seattle_3.jpg"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-2 right-3 z-10 text-[10px] text-white/60 hover:text-white"
+        >
+          Daniel Schwen / Wikimedia Commons - CC BY-SA 4.0
+        </a>
       </section>
 
       {/* Join Section */}
