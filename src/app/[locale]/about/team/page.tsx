@@ -20,12 +20,14 @@ export default async function TeamPage() {
       name: t("member1Name"),
       role: t("member1Role"),
       bio: t("member1Bio"),
+      bio2: t("member1Bio2"),
     },
     {
       photo: "/images/team/tatyana-yakushev.webp",
       name: t("member2Name"),
       role: t("member2Role"),
       bio: t("member2Bio"),
+      bio2: t("member2Bio2"),
     },
   ];
 
@@ -87,6 +89,9 @@ export default async function TeamPage() {
                     {member.role}
                   </p>
                   <p className="mt-4 text-muted-foreground">{member.bio}</p>
+                  {member.bio2 && (
+                    <p className="mt-4 text-muted-foreground">{member.bio2}</p>
+                  )}
                 </div>
               </div>
             ))}
