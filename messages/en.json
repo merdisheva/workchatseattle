@@ -1,7 +1,9 @@
 {
   "Navbar": {
     "home": "Home",
-    "about": "About",
+    "about": "About us",
+    "aboutUs": "About us",
+    "ourTeam": "Our Team",
     "events": "Events",
     "upcomingEvents": "Upcoming Events",
     "pastEvents": "Past Events",
@@ -302,5 +304,16 @@
     "statusPendingDesc": "Your profile is pending admin approval. You'll be notified once it's reviewed.",
     "registerTitle": "Become a Mentor",
     "registerDesc": "Share your knowledge and experience with others in the community. Fill out the form below to apply as a mentor."
+  },
+  "Team": {
+    "title": "Our Team",
+    "heroTitle": "Our Team",
+    "heroSubtitle": "Meet the people behind WorkChat Seattle.",
+    "member1Name": "Masha Makarenkova",
+    "member1Role": "Director",
+    "member1Bio": "Bio coming soon.",
+    "member2Name": "Tatyana Yakushev",
+    "member2Role": "Chief Technology Officer",
+    "member2Bio": "Bio coming soon."
   }
 }
