@@ -25,6 +25,13 @@ export async function GET(request: NextRequest) {
             image: true,
           },
         },
+        connections: {
+          select: {
+            id: true,
+            status: true,
+            initiatorId: true,
+          },
+        },
       },
       orderBy: [
         { status: "asc" },

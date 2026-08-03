@@ -18,6 +18,13 @@ export async function GET(
             image: true,
           },
         },
+        connections: {
+          select: {
+            id: true,
+            status: true,
+            initiatorId: true,
+          },
+        },
       },
     });
 

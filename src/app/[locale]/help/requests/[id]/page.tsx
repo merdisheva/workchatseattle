@@ -24,6 +24,11 @@ interface RequestData {
     name: string | null;
     image: string | null;
   };
+  connections?: Array<{
+    id: string;
+    status: string;
+    initiatorId: string;
+  }>;
 }
 
 export default function RequestDetailPage({
@@ -199,7 +204,14 @@ export default function RequestDetailPage({
 
           {/* Title & Description */}
           <div className="space-y-4 mb-8">
-            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">{request.title}</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground flex flex-wrap items-center gap-3">
+              <span>{request.title}</span>
+              {isOwner && request.connections && request.connections.some(c => c.status === "PENDING" && c.initiatorId !== session?.user?.id) && (
+                <Badge className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs h-6 px-2.5 rounded-full flex-shrink-0 animate-pulse border-none">
+                  {request.connections.filter(c => c.status === "PENDING" && c.initiatorId !== session?.user?.id).length} new response
+                </Badge>
+              )}
+            </h1>
             <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{request.description}</p>
           </div>
 

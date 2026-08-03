@@ -239,6 +239,15 @@ export default function HelpDashboardPage() {
     return "Collaboration Post";
   };
 
+  const getPendingConnectionsCount = (postId: string) => {
+    return connections.filter(
+      (conn) =>
+        conn.status === "PENDING" &&
+        (conn.requestId === postId || conn.offerId === postId) &&
+        conn.initiatorId !== session?.user?.id
+    ).length;
+  };
+
   return (
     <div className="py-12 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="mb-6">
@@ -524,11 +533,20 @@ export default function HelpDashboardPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {myRequests.map((post) => (
-                            <TableRow key={post.id}>
-                              <TableCell className="font-semibold text-sm truncate max-w-[250px]">
-                                {post.title}
-                              </TableCell>
+                          {myRequests.map((post) => {
+                            const pendingCount = getPendingConnectionsCount(post.id);
+                            return (
+                              <TableRow key={post.id}>
+                                <TableCell className="font-semibold text-sm max-w-[250px]">
+                                  <div className="flex items-center gap-2 truncate">
+                                    <span className="truncate">{post.title}</span>
+                                    {pendingCount > 0 && (
+                                      <Badge className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-[9px] h-4.5 px-1.5 rounded-full flex-shrink-0 animate-pulse border-none">
+                                        {pendingCount} {pendingCount === 1 ? "response" : "responses"}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </TableCell>
                               <TableCell>
                                 <Badge
                                   variant={post.status === "OPEN" ? "default" : "secondary"}
@@ -565,7 +583,8 @@ export default function HelpDashboardPage() {
                                 </div>
                               </TableCell>
                             </TableRow>
-                          ))}
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </div>
@@ -598,11 +617,20 @@ export default function HelpDashboardPage() {
                           </TableRow>
                         </TableHeader>
                           <TableBody>
-                            {myOffers.map((post) => (
-                              <TableRow key={post.id}>
-                                <TableCell className="font-semibold text-sm truncate max-w-[250px]">
-                                  {post.title}
-                                </TableCell>
+                            {myOffers.map((post) => {
+                              const pendingCount = getPendingConnectionsCount(post.id);
+                              return (
+                                <TableRow key={post.id}>
+                                  <TableCell className="font-semibold text-sm max-w-[250px]">
+                                    <div className="flex items-center gap-2 truncate">
+                                      <span className="truncate">{post.title}</span>
+                                      {pendingCount > 0 && (
+                                        <Badge className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-[9px] h-4.5 px-1.5 rounded-full flex-shrink-0 animate-pulse border-none">
+                                          {pendingCount} {pendingCount === 1 ? "response" : "responses"}
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </TableCell>
                                 <TableCell>
                                   <Badge
                                     variant={post.status === "OPEN" ? "default" : "secondary"}
@@ -639,8 +667,9 @@ export default function HelpDashboardPage() {
                                   </div>
                                 </TableCell>
                               </TableRow>
-                            ))}
-                          </TableBody>
+                            );
+                          })}
+                        </TableBody>
                         </Table>
                       </div>
                     ) : (

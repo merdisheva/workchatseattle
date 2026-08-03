@@ -21,6 +21,11 @@ interface HelpItem {
     name: string | null;
     image: string | null;
   };
+  connections?: Array<{
+    id: string;
+    status: string;
+    initiatorId: string;
+  }>;
 }
 
 interface HelpCardProps {
@@ -99,10 +104,15 @@ export default function HelpCard({ item, type, onConnect }: HelpCardProps) {
           </div>
 
           {/* Title & Description */}
-          <h3 className="mb-2 text-lg font-semibold tracking-tight text-foreground line-clamp-2">
+          <h3 className="mb-2 text-lg font-semibold tracking-tight text-foreground line-clamp-2 flex flex-wrap items-center gap-2">
             <Link href={type === "request" ? `/help/requests/${item.id}` : `/help/offers/${item.id}`} className="hover:underline hover:text-primary">
               {item.title}
             </Link>
+            {isOwner && item.connections && item.connections.some(c => c.status === "PENDING" && c.initiatorId !== session?.user?.id) && (
+              <Badge className="bg-rose-500 hover:bg-rose-600 text-white font-bold text-[9px] h-4.5 px-1.5 rounded-full flex-shrink-0 animate-pulse border-none">
+                {item.connections.filter(c => c.status === "PENDING" && c.initiatorId !== session?.user?.id).length} {item.connections.filter(c => c.status === "PENDING" && c.initiatorId !== session?.user?.id).length === 1 ? "response" : "responses"}
+              </Badge>
+            )}
           </h3>
           <p className="mb-6 text-sm text-muted-foreground line-clamp-4 whitespace-pre-wrap">
             {item.description}
