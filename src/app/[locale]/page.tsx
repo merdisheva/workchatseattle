@@ -367,7 +367,7 @@ export default async function HomePage() {
             {[1, 2, 3].map((i) => (
               <Card key={i} className="border-none shadow-lg">
                 <CardContent className="pt-6">
-                  <p className="text-sm text-muted-foreground italic">
+                  <p className="text-sm text-muted-foreground italic whitespace-pre-line">
                     &ldquo;{t(`testimonial${i}Quote`)}&rdquo;
                   </p>
                   <div className="mt-6 flex items-center gap-3">
