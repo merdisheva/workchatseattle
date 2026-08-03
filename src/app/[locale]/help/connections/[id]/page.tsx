@@ -31,6 +31,7 @@ interface ConnectionData {
   requestId: string | null;
   offerId: string | null;
   initiatorId: string;
+  initiatorContact: string;
   status: string;
   message: string | null;
   createdAt: string;
@@ -431,6 +432,28 @@ export default function ConnectionDetailPage({
                   </div>
                 </div>
               </div>
+
+              <Separator className="bg-border/40" />
+
+              {/* Contact Info display */}
+              {connection.initiatorId === session?.user?.id ? (
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-foreground">Shared Contact Info</Label>
+                  <p className="text-xs text-muted-foreground bg-muted/30 p-3 rounded border border-border/20 whitespace-pre-wrap leading-relaxed">
+                    {connection.initiatorContact}
+                  </p>
+                  <span className="text-[10px] text-muted-foreground leading-tight block">
+                    You shared this contact info when initiating the connection.
+                  </span>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-foreground">Contact Information</Label>
+                  <p className="text-xs text-foreground bg-muted/60 p-3 rounded border border-border/40 whitespace-pre-wrap font-medium leading-relaxed">
+                    {connection.initiatorContact}
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

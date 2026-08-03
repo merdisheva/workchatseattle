@@ -95,7 +95,7 @@ export default function RequestDetailPage({
     setIsConnectOpen(true);
   };
 
-  const handleConnectionSubmit = async (message: string) => {
+  const handleConnectionSubmit = async (message: string, contact: string) => {
     if (!request) return;
     try {
       const res = await fetch("/api/help/connections", {
@@ -104,6 +104,7 @@ export default function RequestDetailPage({
         body: JSON.stringify({
           requestId: request.id,
           message,
+          contact,
         }),
       });
 

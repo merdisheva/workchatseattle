@@ -95,7 +95,7 @@ export default function OfferDetailPage({
     setIsConnectOpen(true);
   };
 
-  const handleConnectionSubmit = async (message: string) => {
+  const handleConnectionSubmit = async (message: string, contact: string) => {
     if (!offer) return;
     try {
       const res = await fetch("/api/help/connections", {
@@ -104,6 +104,7 @@ export default function OfferDetailPage({
         body: JSON.stringify({
           offerId: offer.id,
           message,
+          contact,
         }),
       });
 

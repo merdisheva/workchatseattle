@@ -85,11 +85,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { requestId, offerId, message } = await request.json();
+    const { requestId, offerId, message, contact } = await request.json();
 
     if (!requestId && !offerId) {
       return NextResponse.json(
         { error: "requestId or offerId is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!contact || typeof contact !== "string" || !contact.trim()) {
+      return NextResponse.json(
+        { error: "Contact information is required to propose a connection" },
         { status: 400 }
       );
     }
@@ -123,6 +130,7 @@ export async function POST(request: NextRequest) {
         data: {
           requestId,
           initiatorId: session.user.id,
+          initiatorContact: contact.trim(),
           message,
           status: "PENDING",
         },
@@ -157,6 +165,7 @@ export async function POST(request: NextRequest) {
         data: {
           offerId,
           initiatorId: session.user.id,
+          initiatorContact: contact.trim(),
           message,
           status: "PENDING",
         },

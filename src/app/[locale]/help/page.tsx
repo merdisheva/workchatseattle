@@ -89,7 +89,7 @@ export default function HelpBoardPage() {
     setSelectedType(type);
   };
 
-  const handleConnectionSubmit = async (message: string) => {
+  const handleConnectionSubmit = async (message: string, contact: string) => {
     if (!selectedItem) return;
 
     try {
@@ -100,6 +100,7 @@ export default function HelpBoardPage() {
           requestId: selectedType === "request" ? selectedItem.id : undefined,
           offerId: selectedType === "offer" ? selectedItem.id : undefined,
           message,
+          contact,
         }),
       });
 

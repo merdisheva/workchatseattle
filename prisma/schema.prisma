@@ -200,14 +200,15 @@ model HelpOffer {
 }
 
 model HelpConnection {
-  id          String               @id @default(cuid())
-  requestId   String?
-  offerId     String?
-  initiatorId String
-  status      HelpConnectionStatus @default(PENDING)
-  message     String?              @db.Text
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  id               String               @id @default(cuid())
+  requestId        String?
+  offerId          String?
+  initiatorId      String
+  initiatorContact String               @db.Text
+  status           HelpConnectionStatus @default(PENDING)
+  message          String?              @db.Text
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
 
   request     HelpRequest?         @relation(fields: [requestId], references: [id], onDelete: Cascade)
   offer       HelpOffer?           @relation(fields: [offerId], references: [id], onDelete: Cascade)

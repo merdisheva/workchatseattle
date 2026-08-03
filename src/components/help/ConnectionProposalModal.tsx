@@ -17,7 +17,7 @@ import { useTranslations } from "next-intl";
 interface ConnectionProposalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (message: string) => Promise<void>;
+  onSubmit: (message: string, contact: string) => Promise<void>;
   title: string;
   creatorName: string;
 }
@@ -31,14 +31,17 @@ export default function ConnectionProposalModal({
 }: ConnectionProposalModalProps) {
   const t = useTranslations("Help");
   const [message, setMessage] = useState("");
+  const [contact, setContact] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!contact.trim()) return;
     setIsSubmitting(true);
     try {
-      await onSubmit(message);
+      await onSubmit(message, contact);
       setMessage("");
+      setContact("");
       onClose();
     } catch (error) {
       console.error("Failed to submit connection proposal:", error);
@@ -72,6 +75,24 @@ export default function ConnectionProposalModal({
                 required
                 className="resize-none"
               />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="propose-contact" className="text-xs font-semibold">
+                Your Contact Info (Required) <span className="text-destructive">*</span>
+              </Label>
+              <Textarea
+                id="propose-contact"
+                placeholder="E.g., email (john@example.com), phone number, or Telegram/Slack username"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                rows={2}
+                required
+                className="resize-none"
+              />
+              <span className="text-[10px] text-muted-foreground">
+                This contact info will be immediately visible to the post owner.
+              </span>
             </div>
           </div>
           
