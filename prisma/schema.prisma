@@ -30,10 +30,14 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
-  accounts    Account[]
-  sessions    Session[]
-  mentor      Mentor?
-  application MemberApplication?
+  accounts     Account[]
+  sessions     Session[]
+  mentor       Mentor?
+  application  MemberApplication?
+  helpRequests HelpRequest[]
+  helpOffers   HelpOffer[]
+  helpOutcomes HelpOutcome[]
+  helpConnections HelpConnection[] @relation("InitiatedConnections")
 }
 
 model MemberApplication {
@@ -144,3 +148,93 @@ model Event {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
+
+enum HelpRequestStatus {
+  OPEN
+  PAUSED
+  CANCELLED
+}
+
+enum HelpOfferStatus {
+  OPEN
+  PAUSED
+  CANCELLED
+}
+
+enum HelpConnectionStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  COMPLETED
+  CANCELLED
+}
+
+model HelpRequest {
+  id          String            @id @default(cuid())
+  userId      String
+  title       String
+  description String            @db.Text
+  status      HelpRequestStatus @default(OPEN)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connections HelpConnection[]
+
+  @@index([userId])
+}
+
+model HelpOffer {
+  id          String            @id @default(cuid())
+  userId      String
+  title       String
+  description String            @db.Text
+  status      HelpOfferStatus   @default(OPEN)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  connections HelpConnection[]
+
+  @@index([userId])
+}
+
+model HelpConnection {
+  id               String               @id @default(cuid())
+  requestId        String?
+  offerId          String?
+  initiatorId      String
+  initiatorContact String               @db.Text
+  status           HelpConnectionStatus @default(PENDING)
+  message          String?              @db.Text
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  request     HelpRequest?         @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  offer       HelpOffer?           @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  initiator   User                 @relation("InitiatedConnections", fields: [initiatorId], references: [id], onDelete: Cascade)
+  outcomes    HelpOutcome[]
+
+  @@unique([requestId, initiatorId])
+  @@unique([offerId, initiatorId])
+  @@index([requestId])
+  @@index([offerId])
+  @@index([initiatorId])
+}
+
+model HelpOutcome {
+  id           String         @id @default(cuid())
+  connectionId String
+  userId       String
+  content      String         @db.Text
+  rating       Int?
+  isPublic     Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  connection   HelpConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, userId])
+}
+
