@@ -16,18 +16,25 @@ export default async function TeamPage() {
 
   const members = [
     {
-      photo: "/images/team/masha-makarenkova.webp",
+      photo: "/images/team/tatyana-yakushev.webp",
       name: t("member1Name"),
       role: t("member1Role"),
       bio: t("member1Bio"),
       bio2: t("member1Bio2"),
     },
     {
-      photo: "/images/team/tatyana-yakushev.webp",
+      photo: "/images/team/masha-makarenkova.webp",
       name: t("member2Name"),
       role: t("member2Role"),
       bio: t("member2Bio"),
       bio2: t("member2Bio2"),
+    },
+    {
+      photo: "/images/team/julia-seas.webp",
+      name: t("member3Name"),
+      role: t("member3Role"),
+      bio: t("member3Bio"),
+      bio2: t("member3Bio2"),
     },
   ];
 
