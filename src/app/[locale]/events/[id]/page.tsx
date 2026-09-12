@@ -9,6 +9,8 @@ import {
   ExternalLink,
   Clock,
   Lock,
+  FileText,
+  Download,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
@@ -103,9 +105,20 @@ function parseVideoUrl(urlStr: string) {
   };
 }
 
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 async function getEvent(id: string) {
   const event = await prisma.event.findUnique({
     where: { id },
+    include: {
+      materials: {
+        orderBy: { createdAt: "asc" },
+      },
+    },
   });
   return event;
 }
@@ -232,6 +245,43 @@ export default async function EventPage({ params }: EventPageProps) {
             {description}
           </div>
         </div>
+
+        {/* Materials */}
+        {event.materials.length > 0 && (
+          <div className="mt-12 border-t pt-8">
+            <h2 className="mb-6 flex items-center gap-2 text-xl font-semibold text-foreground">
+              <FileText className="h-5 w-5 text-primary" />
+              {t("materialsTitle")}
+            </h2>
+            <ul className="space-y-3">
+              {event.materials.map((material) => (
+                <li key={material.id}>
+                  <a
+                    href={material.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-muted/30 p-4 transition-colors hover:bg-muted/60"
+                  >
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                        <FileText className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-foreground">
+                          {material.label}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatFileSize(material.size)}
+                        </p>
+                      </div>
+                    </div>
+                    <Download className="h-5 w-5 shrink-0 text-muted-foreground" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Video Embedding */}
         {event.recordingUrl && videoInfo && (
