@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import { Users, Target, Heart, Lightbulb } from "lucide-react";
+import { Users, Target, Heart, Lightbulb, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 
@@ -17,9 +17,19 @@ export default async function AboutPage() {
 
   const values = [
     {
+      icon: Heart,
+      title: t("valuesSupportTitle"),
+      description: t("valuesSupportDesc"),
+    },
+    {
       icon: Users,
       title: t("valuesCommunityTitle"),
       description: t("valuesCommunityDesc"),
+    },
+    {
+      icon: Target,
+      title: t("valuesGrowthTitle"),
+      description: t("valuesGrowthDesc"),
     },
     {
       icon: Lightbulb,
@@ -27,14 +37,9 @@ export default async function AboutPage() {
       description: t("valuesKnowledgeDesc"),
     },
     {
-      icon: Heart,
-      title: t("valuesSupportTitle"),
-      description: t("valuesSupportDesc"),
-    },
-    {
-      icon: Target,
-      title: t("valuesGrowthTitle"),
-      description: t("valuesGrowthDesc"),
+      icon: Sparkles,
+      title: t("valuesEmpowermentTitle"),
+      description: t("valuesEmpowermentDesc"),
     },
   ];
 
@@ -157,7 +162,7 @@ export default async function AboutPage() {
             <h2 className="text-3xl font-bold">{t("valuesTitle")}</h2>
             <p className="mt-4 text-muted-foreground">{t("valuesSubtitle")}</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {values.map((value) => (
               <Card key={value.title} className="border-none bg-muted/30 text-center">
                 <CardContent className="pt-6">
