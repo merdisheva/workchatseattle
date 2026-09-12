@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import EventForm from "@/components/events/EventForm";
+import EventMaterialsManager from "@/components/events/EventMaterialsManager";
 
 interface EditEventPageProps {
   params: Promise<{
@@ -36,8 +37,9 @@ export default async function EditEventPage({ params }: EditEventPageProps) {
           Update event details.
         </p>
       </div>
-      <div className="max-w-2xl">
+      <div className="max-w-2xl space-y-8">
         <EventForm event={event} />
+        <EventMaterialsManager eventId={event.id} />
       </div>
     </div>
   );
