@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MentorApprovalButton } from "./approval-button";
+import MentorPhotoUpload from "@/components/mentors/MentorPhotoUpload";
 
 export const metadata: Metadata = {
   title: "Manage Mentors",
@@ -26,6 +27,7 @@ async function getMentors() {
         select: {
           name: true,
           email: true,
+          image: true,
         },
       },
       industries: {
@@ -69,6 +71,7 @@ export default async function AdminMentorsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Photo</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Industries</TableHead>
@@ -80,6 +83,14 @@ export default async function AdminMentorsPage() {
             <TableBody>
               {mentors.map((mentor) => (
                 <TableRow key={mentor.id}>
+                  <TableCell>
+                    <MentorPhotoUpload
+                      mentorId={mentor.id}
+                      name={mentor.user.name}
+                      image={mentor.user.image}
+                      compact
+                    />
+                  </TableCell>
                   <TableCell className="font-medium">
                     {mentor.user.name}
                   </TableCell>

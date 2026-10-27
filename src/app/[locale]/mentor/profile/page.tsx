@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import MentorRegistrationForm from "@/components/mentors/MentorRegistrationForm";
+import MentorPhotoUpload from "@/components/mentors/MentorPhotoUpload";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,6 +21,12 @@ async function getMentor(userId: string) {
   const mentor = await prisma.mentor.findUnique({
     where: { userId },
     include: {
+      user: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
       industries: {
         include: {
           industry: true,
@@ -97,6 +104,20 @@ export default async function MentorProfilePage() {
             ) : (
               <p className="text-muted-foreground">{t("statusPendingDesc")}</p>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Photo Card */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>{t("photoLabel")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <MentorPhotoUpload
+              mentorId={mentor.id}
+              name={mentor.user.name}
+              image={mentor.user.image}
+            />
           </CardContent>
         </Card>
 
